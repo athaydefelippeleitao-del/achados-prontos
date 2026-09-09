@@ -16,7 +16,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { ProductDeal } from '../types';
-import { POPULAR_CURATED_DEALS } from '../data/mockDeals';
+import { POPULAR_CURATED_DEALS, CAMPAIGN_99_COUPONS, applyCouponDiscount } from '../data/mockDeals';
 import { formatCurrencyBRL } from '../utils/formatter';
 import { getProductFallbackImage } from '../utils/imageHelpers';
 
@@ -25,18 +25,19 @@ interface DealsExplorerProps {
 }
 
 const CATEGORY_CHIPS = [
-  { id: 'all', label: '🔥 Todas as Ofertas', query: 'ofertas relampago country agro' },
+  { id: 'all', label: '🔥 Festival 9.9 (Todos)', query: 'ofertas relampago 9.9 country agro' },
   { id: 'botas', label: '👢 Botas Texanas', query: 'bota texana country masculina feminina couro dgo' },
   { id: 'calcas', label: '👖 Calças Country', query: 'calca king farm muladeira carpinteira jeans country' },
   { id: 'camisas', label: '👔 Camisas Xadrez', query: 'camisa xadrez country barretos manga longa' },
   { id: 'chapeus', label: '🤠 Chapéus Pralana', query: 'chapeu pralana country aba larga peao' },
   { id: 'cintos', label: '⭐ Cintos & Fivelas', query: 'cinto country couro fivela pampas' },
-  { id: 'cupons', label: '🎟️ Só com Cupom OFERTASEMPRE', query: 'cupom desconto country' },
+  { id: 'cupons', label: '🎟️ Só Cupons Ativos', query: 'cupom desconto country' },
 ];
 
 export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCoupon, setSelectedCoupon] = useState<string>('ALL');
   const [deals, setDeals] = useState<ProductDeal[]>(POPULAR_CURATED_DEALS);
   const [loading, setLoading] = useState(false);
   const [minDiscount, setMinDiscount] = useState<number>(0);
@@ -185,6 +186,60 @@ export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) =>
         </div>
       </div>
 
+      {/* Festival 9.9 Coupon Selector Bar */}
+      <div className="bg-gradient-to-r from-amber-500/10 via-yellow-500/15 to-orange-500/10 border border-yellow-500/30 rounded-2xl p-3.5 sm:p-4 shadow-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
+          <div className="flex items-center gap-2">
+            <span className="flex h-2.5 w-2.5 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-yellow-500"></span>
+            </span>
+            <span className="text-xs font-black text-yellow-300 uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
+              Festival 9.9 Mercado Livre — Cupons Ativos de Hoje
+            </span>
+          </div>
+          <span className="text-[11px] text-slate-400">
+            Clique no cupom para aplicar nos produtos e na mensagem:
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin scrollbar-thumb-slate-800">
+          <button
+            onClick={() => setSelectedCoupon('ALL')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all border cursor-pointer ${
+              selectedCoupon === 'ALL'
+                ? 'bg-yellow-400 text-slate-950 border-yellow-400 shadow-md font-black'
+                : 'bg-slate-900/90 hover:bg-slate-800 text-slate-300 border-slate-700'
+            }`}
+          >
+            ✨ Todos os Cupons
+          </button>
+          {CAMPAIGN_99_COUPONS.map((cp) => (
+            <button
+              key={cp.code}
+              onClick={() => setSelectedCoupon(cp.code)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all border flex items-center gap-1.5 cursor-pointer ${
+                selectedCoupon === cp.code
+                  ? 'bg-yellow-400 text-slate-950 border-yellow-400 shadow-md font-black scale-105'
+                  : 'bg-slate-900/90 hover:bg-slate-800 text-slate-200 border-slate-700'
+              }`}
+            >
+              <span>{cp.code}</span>
+              <span
+                className={`text-[10px] px-1.5 py-0.5 rounded font-black ${
+                  selectedCoupon === cp.code
+                    ? 'bg-slate-950 text-yellow-400'
+                    : 'bg-yellow-500/20 text-yellow-300'
+                }`}
+              >
+                {cp.badge}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Category Chips Bar */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-800">
         {CATEGORY_CHIPS.map((cat) => (
@@ -253,43 +308,57 @@ export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) =>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {filteredDeals.map((deal) => {
-            const hasDiscount = deal.discountPercentage && deal.discountPercentage > 0;
+            const activeCoupon = selectedCoupon !== 'ALL' ? selectedCoupon : (deal.coupon || 'SALVEIESSA');
+            const calculated = selectedCoupon !== 'ALL'
+              ? applyCouponDiscount(deal.price, deal.originalPrice, deal.discountPercentage, selectedCoupon)
+              : { price: deal.price, originalPrice: deal.originalPrice, discountPercentage: deal.discountPercentage || 22 };
+            
+            const activeDeal: ProductDeal = {
+              ...deal,
+              coupon: activeCoupon,
+              price: calculated.price,
+              originalPrice: calculated.originalPrice,
+              discountPercentage: calculated.discountPercentage,
+            };
+
+            const hasDiscount = activeDeal.discountPercentage && activeDeal.discountPercentage > 0;
+
             return (
               <div
-                key={deal.id}
+                key={activeDeal.id}
                 className="bg-slate-900 border border-slate-800 hover:border-yellow-400/50 rounded-2xl overflow-hidden shadow-lg hover:shadow-yellow-500/5 transition-all duration-300 flex flex-col group"
               >
                 {/* Image Box */}
                 <div className="relative w-full aspect-square bg-slate-950 p-4 flex items-center justify-center overflow-hidden">
                   <img
-                    src={deal.fullImage || deal.thumbnail || getProductFallbackImage(deal.title, deal.categoryName)}
-                    alt={deal.title}
+                    src={activeDeal.fullImage || activeDeal.thumbnail || getProductFallbackImage(activeDeal.title, activeDeal.categoryName)}
+                    alt={activeDeal.title}
                     className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                     referrerPolicy="no-referrer"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = getProductFallbackImage(deal.title, deal.categoryName);
+                      (e.target as HTMLImageElement).src = getProductFallbackImage(activeDeal.title, activeDeal.categoryName);
                     }}
                   />
 
                   {/* Discount badge */}
                   {hasDiscount && (
                     <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-md flex items-center gap-0.5">
-                      <span>-{deal.discountPercentage}%</span>
+                      <span>-{activeDeal.discountPercentage}%</span>
                     </div>
                   )}
 
                   {/* Free shipping pill */}
-                  {deal.freeShipping && (
+                  {activeDeal.freeShipping && (
                     <div className="absolute top-3 right-3 bg-emerald-500/90 backdrop-blur-sm text-slate-950 text-[10px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1">
                       <Truck className="w-3 h-3" />
                       <span>FULL</span>
                     </div>
                   )}
 
-                  {deal.coupon && (
+                  {activeDeal.coupon && (
                     <div className="absolute bottom-2 left-3 right-3 bg-yellow-400 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded shadow text-center truncate flex items-center justify-center gap-1">
                       <span>⚠️ Cupom:</span>
-                      <span className="font-extrabold underline">{deal.coupon}</span>
+                      <span className="font-extrabold underline">{activeDeal.coupon}</span>
                     </div>
                   )}
                 </div>
@@ -297,31 +366,31 @@ export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) =>
                 {/* Content Box */}
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                   <div>
-                    {deal.categoryName && (
+                    {activeDeal.categoryName && (
                       <span className="text-[10px] font-bold text-yellow-400/90 uppercase tracking-wider block mb-1">
-                        {deal.categoryName}
+                        {activeDeal.categoryName}
                       </span>
                     )}
                     <h3 className="text-sm font-semibold text-white line-clamp-2 leading-snug group-hover:text-yellow-300 transition-colors">
-                      {deal.title}
+                      {activeDeal.title}
                     </h3>
                   </div>
 
                   {/* Prices */}
                   <div className="pt-2 border-t border-slate-800">
-                    {deal.originalPrice && deal.originalPrice > deal.price && (
+                    {activeDeal.originalPrice && activeDeal.originalPrice > activeDeal.price && (
                       <span className="text-xs text-slate-400 line-through block">
-                        De: {formatCurrencyBRL(deal.originalPrice)}
+                        De: {formatCurrencyBRL(activeDeal.originalPrice)}
                       </span>
                     )}
                     <div className="flex items-baseline gap-1.5 flex-wrap">
                       <span className="text-xs text-slate-400 font-bold">Por:</span>
                       <span className="text-lg font-extrabold text-yellow-400">
-                        {formatCurrencyBRL(deal.price)}
+                        {formatCurrencyBRL(activeDeal.price)}
                       </span>
-                      {deal.coupon ? (
+                      {activeDeal.coupon ? (
                         <span className="text-[10px] font-bold text-emerald-300 bg-emerald-950/80 border border-emerald-700/60 px-1.5 py-0.5 rounded">
-                          com cupom {deal.coupon}
+                          com cupom {activeDeal.coupon}
                         </span>
                       ) : (
                         <span className="text-[10px] font-bold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">
@@ -330,9 +399,9 @@ export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) =>
                       )}
                     </div>
 
-                    {deal.installments && (
+                    {activeDeal.installments && (
                       <span className="text-[11px] text-slate-400 block mt-0.5">
-                        {deal.installments.quantity}x de {formatCurrencyBRL(deal.installments.amount)}
+                        {activeDeal.installments.quantity}x de {formatCurrencyBRL(activeDeal.installments.amount)}
                       </span>
                     )}
                   </div>
@@ -340,7 +409,7 @@ export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) =>
                   {/* Action Buttons */}
                   <div className="pt-2 flex gap-2">
                     <button
-                      onClick={() => onSelectDeal(deal)}
+                      onClick={() => onSelectDeal(activeDeal)}
                       className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold text-xs shadow-md shadow-yellow-500/10 transition-all cursor-pointer"
                     >
                       <Sparkles className="w-3.5 h-3.5" />
@@ -348,7 +417,7 @@ export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) =>
                     </button>
 
                     <a
-                      href={deal.permalink}
+                      href={activeDeal.permalink}
                       target="_blank"
                       rel="noopener noreferrer"
                       title="Ver anúncio no Mercado Livre"

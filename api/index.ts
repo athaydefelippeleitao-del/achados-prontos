@@ -39,26 +39,56 @@ interface ProductDeal {
   description?: string;
 }
 
-function applyCouponDiscount(rawPrice: number, rawOrigPrice?: number | null, rawDiscount?: number) {
+export interface CampaignCoupon {
+  code: string;
+  name: string;
+  discountPct: number;
+  badge: string;
+  categoryHint: string;
+}
+
+export const CAMPAIGN_99_COUPONS: CampaignCoupon[] = [
+  { code: 'SALVEIESSA', name: 'SALVEIESSA', discountPct: 25, badge: '25% OFF', categoryHint: 'Festival 9.9 Geral' },
+  { code: 'AGORAVAI', name: 'AGORAVAI', discountPct: 25, badge: '25% OFF', categoryHint: 'Seleção Especial 9.9' },
+  { code: 'COMPRAML', name: 'COMPRAML', discountPct: 22, badge: '22% OFF', categoryHint: 'Moda & Botas' },
+  { code: 'OFERTASEMPRE', name: 'OFERTASEMPRE', discountPct: 22, badge: '22% OFF', categoryHint: 'Agro & Country' },
+  { code: 'VALEMAIS', name: 'VALEMAIS', discountPct: 10, badge: '10% OFF', categoryHint: 'Compras R$ 79+' },
+];
+
+function applyCouponDiscount(
+  rawPrice: number,
+  rawOrigPrice?: number | null,
+  rawDiscount?: number,
+  couponCode: string = 'SALVEIESSA'
+) {
   const basePrice = Number(rawPrice) || 0;
   let originalPrice = rawOrigPrice && rawOrigPrice > basePrice ? Number(rawOrigPrice) : basePrice;
-  let finalPrice = basePrice;
-  let discountPercentage = rawDiscount || 0;
 
-  if (rawOrigPrice && rawOrigPrice > basePrice) {
-    finalPrice = Math.round(basePrice * 0.90 * 100) / 100;
-    discountPercentage = Math.round(((originalPrice - finalPrice) / originalPrice) * 100);
-  } else {
-    originalPrice = basePrice;
-    finalPrice = Math.round(basePrice * 0.78 * 100) / 100;
-    discountPercentage = 22;
+  let discountRate = 0.22;
+  const upper = (couponCode || '').toUpperCase().trim();
+  if (upper === 'SALVEIESSA' || upper === 'AGORAVAI') {
+    discountRate = 0.25;
+  } else if (upper === 'COMPRAML' || upper === 'OFERTASEMPRE') {
+    discountRate = 0.22;
+  } else if (upper === 'VALEMAIS' || upper === 'TORCIDA' || upper === 'GLORIA') {
+    discountRate = 0.10;
   }
 
+  let finalPrice = basePrice;
+  if (rawOrigPrice && rawOrigPrice > basePrice) {
+    finalPrice = Math.round(basePrice * (1 - discountRate) * 100) / 100;
+  } else {
+    originalPrice = basePrice;
+    finalPrice = Math.round(basePrice * (1 - discountRate) * 100) / 100;
+  }
+
+  const discountPercentage = Math.round(((originalPrice - finalPrice) / originalPrice) * 100);
   return { originalPrice, price: finalPrice, discountPercentage };
 }
 
-const LIVE_SCRAPED_DEALS: ProductDeal[] = (Array.isArray(liveScrapedData) ? liveScrapedData : []).map((d: any) => {
-  const calculated = applyCouponDiscount(d.price, d.originalPrice, d.discountPercentage);
+const LIVE_SCRAPED_DEALS: ProductDeal[] = (Array.isArray(liveScrapedData) ? liveScrapedData : []).map((d: any, idx: number) => {
+  const assignedCoupon = d.coupon || CAMPAIGN_99_COUPONS[idx % CAMPAIGN_99_COUPONS.length].code;
+  const calculated = applyCouponDiscount(d.price, d.originalPrice, d.discountPercentage, assignedCoupon);
   return {
     id: d.id,
     title: d.title,
@@ -74,8 +104,8 @@ const LIVE_SCRAPED_DEALS: ProductDeal[] = (Array.isArray(liveScrapedData) ? live
     sellerName: 'Mercado Livre',
     ratings: 4.9,
     reviewsCount: 120,
-    categoryName: 'Moda Country & Agro',
-    coupon: d.coupon || 'OFERTASEMPRE',
+    categoryName: d.categoryName || 'Moda Country & Agro',
+    coupon: assignedCoupon,
     installments: {
       quantity: 12,
       amount: Math.round(((calculated.price) / 12) * 100) / 100,

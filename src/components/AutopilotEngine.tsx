@@ -48,9 +48,9 @@ const CATEGORIES = [
   { id: 'camisa', label: '👔 Camisas Xadrez Barretos', query: 'camisa xadrez country barretos' },
   { id: 'chapeu', label: '🤠 Chapéus Pralana & Karandá', query: 'chapeu pralana country aba larga' },
   { id: 'cinto', label: '⭐ Cintos de Couro & Fivelas', query: 'cinto country couro fivela pampas' },
-  { id: 'cupons', label: '🎟️ Só com Cupom OFERTASEMPRE', query: 'cupom desconto country' },
+  { id: 'cupons', label: '🎟️ Festival 9.9 com Cupons Ativos', query: 'cupom desconto festival 9.9' },
   { id: 'country', label: '🌾 Moda Country & Agro Geral', query: 'chapeu bota texana calca country' },
-  { id: 'all', label: '🔥 Todas as Ofertas', query: 'ofertas relampago' },
+  { id: 'all', label: '🔥 Todas as Ofertas 9.9', query: 'ofertas relampago 9.9' },
 ];
 
 const INTERVAL_OPTIONS = [
@@ -519,7 +519,7 @@ export const AutopilotEngine: React.FC<AutopilotEngineProps> = ({
             '👔 Camisas Xadrez',
             '🤠 Chapéus Pralana',
             '⭐ Cintos com Fivela',
-            '🎟️ Cupom OFERTASEMPRE',
+            '🎟️ Cupons 9.9 Ativos',
           ].map((tag, idx) => (
             <button
               key={idx}

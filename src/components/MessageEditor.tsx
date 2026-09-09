@@ -434,9 +434,46 @@ export const MessageEditor: React.FC<MessageEditorProps> = ({
                   setCoupon(e.target.value.toUpperCase());
                   if (e.target.value) setHasCouponAlert(true);
                 }}
-                placeholder="Ex: MODAPRAVC ou 10OFF"
+                placeholder="Ex: SALVEIESSA, COMPRAML ou OFERTASEMPRE"
                 className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-yellow-300 font-mono font-bold tracking-wider placeholder-slate-600 uppercase focus:outline-none focus:ring-2 focus:ring-yellow-400"
               />
+            </div>
+
+            {/* Quick 9.9 Coupon Buttons */}
+            <div className="flex items-center gap-1.5 flex-wrap pt-2">
+              <span className="text-[11px] text-slate-400 font-medium">Cupons 9.9 de Hoje:</span>
+              {[
+                { code: 'SALVEIESSA', discount: 25 },
+                { code: 'AGORAVAI', discount: 25 },
+                { code: 'COMPRAML', discount: 22 },
+                { code: 'OFERTASEMPRE', discount: 22 },
+                { code: 'VALEMAIS', discount: 10 },
+              ].map((c) => (
+                <button
+                  key={c.code}
+                  type="button"
+                  onClick={() => {
+                    setCoupon(c.code);
+                    setHasCouponAlert(true);
+                    const base = (originalPrice && originalPrice > 0) ? originalPrice : (price > 0 ? Math.round(price * 1.25 * 100) / 100 : 0);
+                    if (base > 0) {
+                      if (!originalPrice || originalPrice <= price) {
+                        setOriginalPrice(base);
+                      }
+                      const newPrice = Math.round(base * (1 - c.discount / 100) * 100) / 100;
+                      setPrice(newPrice);
+                      setDiscountPercentage(c.discount);
+                    }
+                  }}
+                  className={`px-2 py-0.5 rounded text-[11px] font-bold border transition-all cursor-pointer ${
+                    coupon === c.code
+                      ? 'bg-yellow-400 text-slate-950 border-yellow-400 shadow-sm font-black'
+                      : 'bg-slate-800 hover:bg-slate-700 text-yellow-300 border-slate-700'
+                  }`}
+                >
+                  {c.code} (-{c.discount}%)
+                </button>
+              ))}
             </div>
           </div>
 
