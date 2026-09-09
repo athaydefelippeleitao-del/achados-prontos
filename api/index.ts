@@ -828,6 +828,7 @@ app.get("/api/autopilot/scan", async (req, res) => {
     const customQuery = ((req.query.q as string) || (req.query.query as string) || "").trim();
     const minDiscount = Number(req.query.minDiscount) || 0;
     const onlyFreeShipping = req.query.onlyFreeShipping === "true";
+    const onlyWithCoupon = req.query.onlyWithCoupon === "true";
     const CATEGORY_SEARCH_MAP: Record<string, string> = {
       all: "ofertas relampago country agro",
       country: "chapeu country pralana bota texana goyazes cinto rodeio",
