@@ -98,7 +98,14 @@ export const AutopilotEngine: React.FC<AutopilotEngineProps> = ({
   const [logs, setLogs] = useState<AutopilotLogItem[]>(() => {
     try {
       const stored = localStorage.getItem('achados_autopilot_logs');
-      return stored ? JSON.parse(stored) : [];
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          // Remove outdated simulated IDs with old wrong prices
+          return parsed.filter((item: AutopilotLogItem) => !item.deal?.id?.includes('2039481920'));
+        }
+      }
+      return [];
     } catch {
       return [];
     }

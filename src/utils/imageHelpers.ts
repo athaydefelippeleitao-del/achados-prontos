@@ -70,7 +70,7 @@ export function getProductFallbackImage(title?: string, category?: string): stri
     return CATEGORY_FALLBACK_IMAGES[category];
   }
   const text = (title || '').toLowerCase();
-  if (text.includes('chapéu') || text.includes('pralana') || text.includes('texan') || text.includes('agro')) {
+  if (text.includes('chapéu') || text.includes('pralana') || text.includes('texan') || text.includes('agro') || text.includes('country') || text.includes('cinto') || text.includes('rodeio')) {
     return CATEGORY_FALLBACK_IMAGES['Moda & Agro'];
   }
   if (text.includes('bota') || text.includes('goyazes') || text.includes('couro')) {
