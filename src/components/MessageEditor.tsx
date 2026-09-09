@@ -38,6 +38,7 @@ interface MessageEditorProps {
   onOpenTemplateModal: () => void;
   onOpenCardModal: () => void;
   onSaveToHistory: (formattedMsg: string) => void;
+  onAddToQueue?: (deal: ProductDeal, formattedMsg: string, imageUrl: string) => void;
 }
 
 export const MessageEditor: React.FC<MessageEditorProps> = ({
@@ -50,6 +51,7 @@ export const MessageEditor: React.FC<MessageEditorProps> = ({
   onOpenTemplateModal,
   onOpenCardModal,
   onSaveToHistory,
+  onAddToQueue,
 }) => {
   const [headline, setHeadline] = useState(product.headline || 'PRALANA PRA FINALIZAR SUA NOITE 🤠🌾🐎');
   const [title, setTitle] = useState(product.title);
@@ -694,6 +696,7 @@ export const MessageEditor: React.FC<MessageEditorProps> = ({
           productLink={finalAffiliateLink || productLink}
           onOpenCardModal={onOpenCardModal}
           onSaveFavorite={handleSaveFavorite}
+          onAddToQueue={onAddToQueue ? () => onAddToQueue(product, rawMessage, imageUrl) : undefined}
         />
       </div>
     </div>

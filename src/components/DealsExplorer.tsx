@@ -13,7 +13,8 @@ import {
   Check,
   Star,
   Copy,
-  Loader2
+  Loader2,
+  Clock
 } from 'lucide-react';
 import { ProductDeal } from '../types';
 import { POPULAR_CURATED_DEALS, CAMPAIGN_99_COUPONS, applyCouponDiscount } from '../data/mockDeals';
@@ -22,6 +23,7 @@ import { getProductFallbackImage } from '../utils/imageHelpers';
 
 interface DealsExplorerProps {
   onSelectDeal: (deal: ProductDeal) => void;
+  onAddToQueue?: (deal: ProductDeal) => void;
 }
 
 const CATEGORY_CHIPS = [
@@ -34,7 +36,7 @@ const CATEGORY_CHIPS = [
   { id: 'cupons', label: '🎟️ Só Cupons Ativos', query: 'cupom desconto country' },
 ];
 
-export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) => {
+export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal, onAddToQueue }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedCoupon, setSelectedCoupon] = useState<string>('ALL');
@@ -43,6 +45,7 @@ export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) =>
   const [minDiscount, setMinDiscount] = useState<number>(0);
   const [onlyFreeShipping, setOnlyFreeShipping] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [queuedDealId, setQueuedDealId] = useState<string | null>(null);
 
   const fetchDeals = async (query: string) => {
     setLoading(true);
@@ -415,6 +418,24 @@ export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) =>
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>Gerar Mensagem</span>
                     </button>
+
+                    {onAddToQueue && (
+                      <button
+                        onClick={() => {
+                          onAddToQueue(activeDeal);
+                          setQueuedDealId(activeDeal.id);
+                          setTimeout(() => setQueuedDealId(null), 2000);
+                        }}
+                        className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
+                          queuedDealId === activeDeal.id
+                            ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-bold'
+                            : 'bg-slate-800 hover:bg-slate-750 text-yellow-300 hover:text-yellow-200 border-slate-700 hover:border-yellow-400/40'
+                        }`}
+                        title="Guardar na Fila de Envios Agendados"
+                      >
+                        {queuedDealId === activeDeal.id ? <Check className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
+                      </button>
+                    )}
 
                     <a
                       href={activeDeal.permalink}

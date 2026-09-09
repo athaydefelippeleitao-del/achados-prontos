@@ -14,7 +14,8 @@ import {
   ChevronDown,
   Users,
   Zap,
-  Globe
+  Globe,
+  Clock
 } from 'lucide-react';
 import { renderWhatsAppMarkdown } from '../utils/formatter';
 import { getProductFallbackImage } from '../utils/imageHelpers';
@@ -29,6 +30,7 @@ interface WhatsAppPreviewCardProps {
   productLink?: string;
   onOpenCardModal: () => void;
   onSaveFavorite?: () => void;
+  onAddToQueue?: () => void;
   isSaved?: boolean;
 }
 
@@ -48,6 +50,15 @@ export const WhatsAppPreviewCard: React.FC<WhatsAppPreviewCardProps> = ({
   const [copyImageSuccess, setCopyImageSuccess] = useState(false);
   const [downloadingImg, setDownloadingImg] = useState(false);
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
+  const [addedToQueue, setAddedToQueue] = useState(false);
+
+  const handleAddToQueue = () => {
+    if (onAddToQueue) {
+      onAddToQueue();
+      setAddedToQueue(true);
+      setTimeout(() => setAddedToQueue(false), 2500);
+    }
+  };
 
   // Extract link from rawMessage if not passed directly
   const extractedLink = productLink || (rawMessage.match(/https?:\/\/[^\s]+/)?.[0] || '');
@@ -275,6 +286,23 @@ export const WhatsAppPreviewCard: React.FC<WhatsAppPreviewCardProps> = ({
 
       {/* Action Controls Bar */}
       <div className="bg-slate-850 p-4 border-t border-slate-800 space-y-2.5">
+        {/* Add to Scheduled Queue Button */}
+        {onAddToQueue && (
+          <button
+            id="btn-add-to-scheduled-queue"
+            type="button"
+            onClick={handleAddToQueue}
+            className={`w-full py-3 px-4 rounded-xl border font-black text-xs sm:text-sm shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              addedToQueue
+                ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-emerald-500/20'
+                : 'bg-slate-900 hover:bg-slate-800 text-yellow-300 hover:text-yellow-200 border-yellow-500/40 shadow-yellow-500/10'
+            }`}
+          >
+            {addedToQueue ? <Check className="w-4 h-4 text-slate-950 stroke-[3]" /> : <Clock className="w-4 h-4 text-yellow-400" />}
+            <span>{addedToQueue ? '✅ Guardado na Fila de Envios!' : '⏰ Guardar na Fila de Envios Agendados'}</span>
+          </button>
+        )}
+
         {/* Main WhatsApp Direct Group Send Button */}
         <button
           id="btn-send-to-whatsapp-group"

@@ -85,3 +85,28 @@ export interface AutopilotLogItem {
   status: 'sent' | 'queued' | 'error' | 'opened';
   statusDetails?: string;
 }
+
+export interface QueuedPromotion {
+  id: string;
+  createdAt: number;
+  deal: ProductDeal;
+  formattedMessage: string;
+  imageUrl: string;
+  coupon?: string;
+  status: 'pending' | 'sent' | 'failed' | 'paused';
+  sentAt?: string;
+  targetPhoneOrGroup?: string;
+  notes?: string;
+}
+
+export interface QueueScheduleConfig {
+  isRunning: boolean;
+  intervalMinutes: number; // e.g. 5, 10, 15, 30, 60
+  dispatchMethod: 'webhook' | 'whatsapp_web' | 'simulation';
+  webhookUrl?: string;
+  webhookSecret?: string;
+  targetPhone?: string;
+  soundAlert: boolean;
+  autoLoop: boolean; // if true, resets sent items to pending when queue ends
+}
+

@@ -9,14 +9,16 @@ import {
   Sparkles,
   Link2,
   Tag,
-  Bot
+  Bot,
+  Clock
 } from 'lucide-react';
 
 interface NavbarProps {
-  activeTab: 'editor' | 'explorer' | 'templates' | 'history' | 'autopilot';
-  setActiveTab: (tab: 'editor' | 'explorer' | 'templates' | 'history' | 'autopilot') => void;
+  activeTab: 'editor' | 'explorer' | 'templates' | 'history' | 'autopilot' | 'queue';
+  setActiveTab: (tab: 'editor' | 'explorer' | 'templates' | 'history' | 'autopilot' | 'queue') => void;
   openAffiliateModal: () => void;
   savedCount: number;
+  queueCount?: number;
   onQuickPasteClick: () => void;
 }
 
@@ -80,6 +82,26 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="hidden lg:inline-flex bg-emerald-400 text-slate-950 text-[9px] font-black px-1.5 py-0.2 rounded-full">
                 ROBÔ
               </span>
+            </button>
+
+            <button
+              id="tab-queue-btn"
+              onClick={() => setActiveTab('queue')}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                activeTab === 'queue'
+                  ? 'bg-yellow-400 text-slate-950 font-bold shadow-md'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <Clock className={`w-4 h-4 ${activeTab === 'queue' ? 'text-slate-950' : 'text-yellow-400'}`} />
+              <span>Fila & Agendador</span>
+              {queueCount !== undefined && queueCount > 0 && (
+                <span className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
+                  activeTab === 'queue' ? 'bg-slate-950 text-yellow-400' : 'bg-yellow-400 text-slate-950'
+                }`}>
+                  {queueCount}
+                </span>
+              )}
             </button>
 
             <button

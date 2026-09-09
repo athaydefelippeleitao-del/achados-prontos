@@ -6,7 +6,7 @@
  * working offline / without credentials.
  */
 
-import { MessageTemplate, AffiliateSettings, SavedOffer } from '../types';
+import { MessageTemplate, AffiliateSettings, SavedOffer, QueuedPromotion, QueueScheduleConfig } from '../types';
 import { supabase, isSupabaseConfigured, getSessionId } from './supabase';
 import { DEFAULT_TEMPLATES } from '../data/defaultTemplates';
 
@@ -283,3 +283,90 @@ export async function saveAffiliateSettings(settings: AffiliateSettings): Promis
     console.warn('[storage] saveAffiliateSettings error:', err?.message);
   }
 }
+
+// ─── Queued Scheduled Promotions ─────────────────────────────────────────────
+
+const LS_QUEUE = 'achados_scheduled_queue';
+const LS_QUEUE_CONFIG = 'achados_queue_config';
+
+export const DEFAULT_QUEUE_CONFIG: QueueScheduleConfig = {
+  isRunning: false,
+  intervalMinutes: 15,
+  dispatchMethod: 'webhook',
+  webhookUrl: localStorage.getItem('achados_whatsapp_webhook') || '',
+  webhookSecret: localStorage.getItem('achados_whatsapp_secret') || '',
+  soundAlert: true,
+  autoLoop: false,
+};
+
+export function loadQueuedPromotions(): QueuedPromotion[] {
+  try {
+    const raw = localStorage.getItem(LS_QUEUE);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveQueuedPromotions(queue: QueuedPromotion[]): void {
+  try {
+    localStorage.setItem(LS_QUEUE, JSON.stringify(queue));
+  } catch (e) {
+    console.error('Failed to save queue to localStorage:', e);
+  }
+}
+
+export function addPromotionToQueue(
+  item: Omit<QueuedPromotion, 'id' | 'createdAt' | 'status'>
+): QueuedPromotion {
+  const current = loadQueuedPromotions();
+  const newPromotion: QueuedPromotion = {
+    ...item,
+    id: 'queue-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+    createdAt: Date.now(),
+    status: 'pending',
+  };
+  current.push(newPromotion);
+  saveQueuedPromotions(current);
+  return newPromotion;
+}
+
+export function removePromotionFromQueue(id: string): QueuedPromotion[] {
+  const current = loadQueuedPromotions();
+  const updated = current.filter((item) => item.id !== id);
+  saveQueuedPromotions(updated);
+  return updated;
+}
+
+export function clearSentPromotionsFromQueue(): QueuedPromotion[] {
+  const current = loadQueuedPromotions();
+  const updated = current.filter((item) => item.status !== 'sent');
+  saveQueuedPromotions(updated);
+  return updated;
+}
+
+export function updateQueuedPromotion(id: string, partial: Partial<QueuedPromotion>): QueuedPromotion[] {
+  const current = loadQueuedPromotions();
+  const updated = current.map((item) => (item.id === id ? { ...item, ...partial } : item));
+  saveQueuedPromotions(updated);
+  return updated;
+}
+
+export function loadQueueConfig(): QueueScheduleConfig {
+  try {
+    const raw = localStorage.getItem(LS_QUEUE_CONFIG);
+    if (!raw) return DEFAULT_QUEUE_CONFIG;
+    return { ...DEFAULT_QUEUE_CONFIG, ...JSON.parse(raw) };
+  } catch {
+    return DEFAULT_QUEUE_CONFIG;
+  }
+}
+
+export function saveQueueConfig(config: QueueScheduleConfig): void {
+  try {
+    localStorage.setItem(LS_QUEUE_CONFIG, JSON.stringify(config));
+  } catch (e) {
+    console.error('Failed to save queue config to localStorage:', e);
+  }
+}
+

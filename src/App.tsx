@@ -12,9 +12,11 @@ import { TemplateManagerModal } from './components/TemplateManagerModal';
 import { AffiliateSettingsModal } from './components/AffiliateSettingsModal';
 import { CardGeneratorModal } from './components/CardGeneratorModal';
 import { HistoryDrawer } from './components/HistoryDrawer';
-import { ProductDeal, MessageTemplate, AffiliateSettings, SavedOffer } from './types';
+import { ScheduledQueueManager } from './components/ScheduledQueueManager';
+import { ProductDeal, MessageTemplate, AffiliateSettings, SavedOffer, QueuedPromotion } from './types';
 import { DEFAULT_TEMPLATES } from './data/defaultTemplates';
 import { INITIAL_USER_EXAMPLE_DEAL } from './data/mockDeals';
+import { formatMessage } from './utils/formatter';
 import { 
   Zap, 
   Sparkles, 
@@ -25,7 +27,8 @@ import {
   TrendingUp,
   FileText,
   Sliders,
-  Bot
+  Bot,
+  Clock
 } from 'lucide-react';
 import { AutopilotEngine } from './components/AutopilotEngine';
 import {
@@ -36,13 +39,16 @@ import {
   deleteOffer,
   loadAffiliateSettings,
   saveAffiliateSettings,
+  loadQueuedPromotions,
+  addPromotionToQueue,
 } from './lib/storage';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'editor' | 'explorer' | 'templates' | 'history' | 'autopilot'>('editor');
+  const [activeTab, setActiveTab] = useState<'editor' | 'explorer' | 'templates' | 'history' | 'autopilot' | 'queue'>('editor');
   const [product, setProduct] = useState<ProductDeal>(INITIAL_USER_EXAMPLE_DEAL);
   const [templates, setTemplates] = useState<MessageTemplate[]>(DEFAULT_TEMPLATES);
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('felipao_padrao');
+  const [queue, setQueue] = useState<QueuedPromotion[]>(() => loadQueuedPromotions());
 
   const [affiliateSettings, setAffiliateSettings] = useState<AffiliateSettings>({
     affiliateTag: '',
@@ -136,6 +142,30 @@ export default function App() {
     showToast('Oferta favoritada e salva no histórico!');
   };
 
+  const handleAddToQueue = (deal: ProductDeal, formattedMsg: string, imageUrl: string) => {
+    const newPromo = addPromotionToQueue({
+      deal,
+      formattedMessage: formattedMsg,
+      imageUrl,
+      coupon: deal.coupon,
+    });
+    setQueue((prev) => [...prev, newPromo]);
+    showToast(`⏰ "${deal.title.slice(0, 24)}..." adicionado à Fila de Envios!`);
+  };
+
+  const handleAddDealToQueueFromExplorer = (deal: ProductDeal) => {
+    const currentTemplate = templates.find((t) => t.id === selectedTemplateId) || templates[0];
+    const formattedMsg = formatMessage(deal, currentTemplate.content, affiliateSettings);
+    const newPromo = addPromotionToQueue({
+      deal,
+      formattedMessage: formattedMsg,
+      imageUrl: deal.fullImage || deal.thumbnail,
+      coupon: deal.coupon,
+    });
+    setQueue((prev) => [...prev, newPromo]);
+    showToast(`⏰ "${deal.title.slice(0, 24)}..." guardado na Fila de Envios!`);
+  };
+
   const handleLoadSavedOffer = (offer: SavedOffer) => {
     setProduct({
       id: offer.id,
@@ -181,6 +211,7 @@ export default function App() {
         setActiveTab={setActiveTab}
         openAffiliateModal={() => setIsAffiliateModalOpen(true)}
         savedCount={savedOffers.length}
+        queueCount={queue.filter((i) => i.status === 'pending').length}
         onQuickPasteClick={() => {
           setActiveTab('editor');
           const input = document.getElementById('ml-link-input');
@@ -211,6 +242,18 @@ export default function App() {
             onOpenTemplateModal={() => setIsTemplateModalOpen(true)}
             onOpenCardModal={() => setIsCardModalOpen(true)}
             onSaveToHistory={handleSaveToHistory}
+            onAddToQueue={handleAddToQueue}
+          />
+        )}
+
+        {activeTab === 'queue' && (
+          <ScheduledQueueManager
+            queue={queue}
+            setQueue={setQueue}
+            templates={templates}
+            affiliateSettings={affiliateSettings}
+            onOpenExplorer={() => setActiveTab('explorer')}
+            onSelectDealForEditor={handleSelectDealFromExplorer}
           />
         )}
 
@@ -224,7 +267,10 @@ export default function App() {
         )}
 
         {activeTab === 'explorer' && (
-          <DealsExplorer onSelectDeal={handleSelectDealFromExplorer} />
+          <DealsExplorer 
+            onSelectDeal={handleSelectDealFromExplorer} 
+            onAddToQueue={handleAddDealToQueueFromExplorer}
+          />
         )}
 
         {activeTab === 'templates' && (
