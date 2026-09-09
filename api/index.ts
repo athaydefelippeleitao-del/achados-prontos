@@ -55,7 +55,7 @@ const LIVE_SCRAPED_DEALS: ProductDeal[] = (Array.isArray(liveScrapedData) ? live
   ratings: 4.9,
   reviewsCount: 120,
   categoryName: 'Moda Country & Agro',
-  coupon: d.coupon,
+  coupon: d.coupon || 'OFERTASEMPRE',
   installments: {
     quantity: 12,
     amount: Math.round(((Number(d.price) || 0) / 12) * 100) / 100,
