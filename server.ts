@@ -976,6 +976,7 @@ app.post("/api/whatsapp/send-webhook", async (req, res) => {
 app.get("/api/autopilot/scan", async (req, res) => {
   try {
     const category = (req.query.category as string) || "all";
+    const customQuery = ((req.query.q as string) || (req.query.query as string) || "").trim();
     const minDiscount = Number(req.query.minDiscount) || 0;
     const onlyFreeShipping = req.query.onlyFreeShipping === "true";
     const onlyWithCoupon = req.query.onlyWithCoupon === "true";
@@ -991,7 +992,7 @@ app.get("/api/autopilot/scan", async (req, res) => {
       cupons: "ofertas com desconto frete gratis",
     };
 
-    const searchQuery = CATEGORY_SEARCH_MAP[category] || category || "ofertas relampago";
+    const searchQuery = customQuery || CATEGORY_SEARCH_MAP[category] || category || "ofertas relampago";
     let liveCandidates: any[] = [];
 
     // 1. Try Live HTML Scraping from Mercado Livre
@@ -1019,6 +1020,13 @@ app.get("/api/autopilot/scan", async (req, res) => {
     // 3. Fallback to Curated List if live scraping returned empty
     if (liveCandidates.length === 0) {
       liveCandidates = POPULAR_CURATED_DEALS.filter((d) => {
+        if (customQuery) {
+          const q = customQuery.toLowerCase();
+          const t = d.title.toLowerCase();
+          const c = (d.categoryName || "").toLowerCase();
+          const h = (d.headline || "").toLowerCase();
+          return t.includes(q) || c.includes(q) || h.includes(q) || q.split(/\s+/).some((w) => t.includes(w) || c.includes(w));
+        }
         if (category !== "all") {
           const catLower = (d.categoryName || "").toLowerCase();
           const titleLower = d.title.toLowerCase();

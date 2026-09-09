@@ -26,7 +26,8 @@ import {
   Tag,
   ArrowRight,
   ShieldCheck,
-  RotateCw
+  RotateCw,
+  Search
 } from 'lucide-react';
 import { ProductDeal, MessageTemplate, AffiliateSettings, AutopilotConfig, AutopilotLogItem } from '../types';
 import { formatMessage, formatCurrencyBRL } from '../utils/formatter';
@@ -42,14 +43,14 @@ interface AutopilotEngineProps {
 }
 
 const CATEGORIES = [
-  { id: 'all', label: '🔥 Todas as Ofertas Quentes', query: 'ofertas relampago' },
-  { id: 'country', label: '🤠 Moda Country & Rodeio (Chapéus, Botas, Cintos)', query: 'chapeu country pralana bota texana goyazes rodeio' },
-  { id: 'agro', label: '🌾 Moda & Agro (Chapéus e Botas)', query: 'chapeu pralana bota goyazes' },
+  { id: 'country', label: '🤠 Moda Country & Rodeio', query: 'chapeu country pralana bota texana goyazes rodeio' },
+  { id: 'all', label: '🔥 Todas as Ofertas', query: 'ofertas relampago' },
+  { id: 'agro', label: '🌾 Moda & Agro', query: 'chapeu pralana bota goyazes' },
   { id: 'tech', label: '📱 Celulares & Tech', query: 'smartphone fone bluetooth jbl' },
-  { id: 'casa', label: '🍳 Casa & Cozinha (Air Fryer)', query: 'air fryer walita cafeteira aspirador' },
+  { id: 'casa', label: '🍳 Casa & Cozinha', query: 'air fryer walita cafeteira aspirador' },
   { id: 'ferramentas', label: '🛠️ Ferramentas & Oficina', query: 'parafusadeira furadeira bosch' },
   { id: 'beleza', label: '💄 Perfumaria & Beleza', query: 'perfume malbec boticario' },
-  { id: 'cupons', label: '🎟️ Super Descontos (>30%) & Cupons', query: 'desconto cupom' },
+  { id: 'cupons', label: '🎟️ Super Descontos & Cupons', query: 'desconto cupom' },
 ];
 
 const INTERVAL_OPTIONS = [
@@ -78,7 +79,7 @@ export const AutopilotEngine: React.FC<AutopilotEngineProps> = ({
     return {
       isEnabled: false,
       intervalMinutes: 1,
-      category: 'all',
+      category: 'country',
       minDiscount: 15,
       onlyFreeShipping: true,
       onlyWithCoupon: false,
@@ -93,6 +94,7 @@ export const AutopilotEngine: React.FC<AutopilotEngineProps> = ({
 
   const [isRunning, setIsRunning] = useState(config.isEnabled);
   const [secondsRemaining, setSecondsRemaining] = useState<number>(Math.round(config.intervalMinutes * 60));
+  const [searchKeyword, setSearchKeyword] = useState('');
   const [logs, setLogs] = useState<AutopilotLogItem[]>(() => {
     try {
       const stored = localStorage.getItem('achados_autopilot_logs');
@@ -155,18 +157,24 @@ export const AutopilotEngine: React.FC<AutopilotEngineProps> = ({
   };
 
   // Perform single scan and dispatch cycle
-  const performCycle = async (forced = false) => {
+  const performCycle = async (forced = false, overrideCategory?: string, overrideQuery?: string) => {
     if (isScanning) return;
     setIsScanning(true);
 
     try {
+      const activeCat = overrideCategory || config.category || 'country';
+      const activeQ = overrideQuery !== undefined ? overrideQuery : searchKeyword;
+
       // 1. Fetch deal from server scanner
       const params = new URLSearchParams({
-        category: config.category,
+        category: activeCat,
         minDiscount: config.minDiscount.toString(),
         onlyFreeShipping: config.onlyFreeShipping.toString(),
         onlyWithCoupon: config.onlyWithCoupon.toString(),
       });
+      if (activeQ && activeQ.trim()) {
+        params.set('q', activeQ.trim());
+      }
 
       const response = await fetch(`/api/autopilot/scan?${params.toString()}`);
       let deal: ProductDeal;
@@ -415,6 +423,109 @@ export const AutopilotEngine: React.FC<AutopilotEngineProps> = ({
               )}
             </span>
           </div>
+        </div>
+      </div>
+
+      {/* Category Selection & Custom Search Banner for Autopilot */}
+      <div className="bg-slate-900 border border-yellow-500/30 rounded-3xl p-5 sm:p-6 shadow-xl space-y-3.5">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="p-2 rounded-xl bg-yellow-400/10 text-yellow-400 border border-yellow-400/20">
+              <SlidersHorizontal className="w-4 h-4" />
+            </span>
+            <div>
+              <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                <span>Escolha o Nicho / Categoria de Ofertas</span>
+                <span className="text-[10px] font-extrabold bg-yellow-400 text-slate-950 px-2 py-0.5 rounded-full">
+                  1 Clique
+                </span>
+              </h2>
+              <p className="text-xs text-slate-400">
+                Selecione qual categoria o robô deve vasculhar ou pesquise produtos específicos abaixo.
+              </p>
+            </div>
+          </div>
+
+          <div className="text-xs text-slate-400">
+            Nicho ativo: <strong className="text-yellow-400 font-bold">{CATEGORIES.find((c) => c.id === config.category)?.label || '🤠 Country & Rodeio'}</strong>
+          </div>
+        </div>
+
+        {/* Category Chips */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin scrollbar-thumb-slate-800">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => {
+                setConfig((prev) => ({ ...prev, category: cat.id }));
+                performCycle(true, cat.id, '');
+              }}
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                config.category === cat.id
+                  ? 'bg-yellow-400 text-slate-950 border-yellow-400 shadow-lg shadow-yellow-500/20 font-extrabold scale-[1.02]'
+                  : 'bg-slate-950 hover:bg-slate-800 text-slate-300 border-slate-800'
+              }`}
+            >
+              <span>{cat.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Custom Search Box for Autopilot */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (searchKeyword.trim()) {
+              performCycle(true, config.category, searchKeyword.trim());
+            }
+          }}
+          className="flex flex-col sm:flex-row gap-2 pt-1"
+        >
+          <div className="relative flex-1">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text"
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              placeholder="Pesquisar termo específico: Chapéu Pralana, Bota Texana Goyazes, Cinto Country..."
+              className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-inner"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={isScanning}
+            className="px-5 py-2.5 bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 shrink-0 cursor-pointer disabled:opacity-50"
+          >
+            <Zap className="w-3.5 h-3.5 fill-slate-950" />
+            <span>{isScanning ? 'Varrendo Mercado Livre...' : 'Buscar & Disparar Agora'}</span>
+          </button>
+        </form>
+
+        {/* Country Quick Tags */}
+        <div className="flex items-center gap-1.5 overflow-x-auto text-[11px] text-slate-400 pt-0.5">
+          <span className="font-semibold text-slate-300 shrink-0">Atalhos Country:</span>
+          {[
+            '🤠 Chapéu Pralana',
+            '👢 Bota Goyazes',
+            '👢 Bota Texana Feminina',
+            '🌾 Cinto Couro Country',
+            '👕 Camisa Xadrez Rodeio',
+          ].map((tag, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => {
+                const query = tag.replace(/^[^\s]+\s/, '');
+                setSearchKeyword(query);
+                performCycle(true, 'country', query);
+              }}
+              className="px-2.5 py-1 rounded-lg bg-slate-950 hover:bg-yellow-400/10 text-slate-300 hover:text-yellow-300 border border-slate-800 text-[11px] whitespace-nowrap transition-colors cursor-pointer"
+            >
+              {tag}
+            </button>
+          ))}
         </div>
       </div>
 
