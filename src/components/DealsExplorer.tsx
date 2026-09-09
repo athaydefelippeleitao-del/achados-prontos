@@ -26,7 +26,8 @@ interface DealsExplorerProps {
 
 const CATEGORY_CHIPS = [
   { id: 'all', label: '🔥 Todas as Ofertas', query: 'ofertas relampago' },
-  { id: 'agro', label: '🤠 Moda & Agro', query: 'chapeu botas agro' },
+  { id: 'country', label: '🤠 Country & Rodeio', query: 'chapeu country pralana bota texana rodeio' },
+  { id: 'agro', label: '🌾 Moda Agro', query: 'chapeu botas agro couro western' },
   { id: 'tech', label: '📱 Celulares & Tech', query: 'smartphone fone notebook' },
   { id: 'casa', label: '🍳 Casa & Cozinha', query: 'air fryer panela cafeteira' },
   { id: 'gamer', label: '🎮 Gamer & PC', query: 'headset gamer teclado monitor' },

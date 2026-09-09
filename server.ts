@@ -407,7 +407,37 @@ app.get("/api/ml/search", async (req, res) => {
   }
 
   // Strategy 4: Filter from Curated Popular Deals
-  const searchTerms = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
+  // Synonym map: expands search terms to related keywords
+  const SYNONYMS: Record<string, string[]> = {
+    country: ["country", "pralana", "goyazes", "texana", "rodeio", "western", "chapeu", "bota", "couro", "sertanejo", "cowboy", "agro"],
+    rodeio: ["rodeio", "country", "texana", "chapeu", "bota", "western", "sertanejo"],
+    agro: ["agro", "country", "pralana", "goyazes", "texana", "rodeio", "chapeu", "bota", "couro", "western"],
+    pralana: ["pralana", "chapeu", "country", "palha", "feltro", "bangora"],
+    goyazes: ["goyazes", "bota", "texana", "couro", "country"],
+    chapeu: ["chapeu", "chapéu", "pralana", "cowboy", "country", "palha", "feltro"],
+    bota: ["bota", "texana", "couro", "goyazes", "country"],
+    texana: ["texana", "bota", "country", "goyazes", "couro", "western"],
+    western: ["western", "country", "texana", "bota", "chapeu"],
+    tech: ["tech", "smartphone", "celular", "fone", "notebook", "iphone", "samsung"],
+    casa: ["casa", "cozinha", "air fryer", "airfryer", "panela", "cafeteira"],
+    gamer: ["gamer", "headset", "teclado", "monitor", "mouse"],
+    ferramenta: ["ferramenta", "bosch", "makita", "parafusadeira", "furadeira", "dewalt"],
+    beleza: ["beleza", "perfume", "maquiagem", "boticario", "natura"],
+  };
+
+  const rawTerms = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
+
+  // Expand search terms with synonyms
+  const expandedTerms = new Set<string>(rawTerms);
+  rawTerms.forEach((term) => {
+    Object.entries(SYNONYMS).forEach(([key, synonymList]) => {
+      if (key === term || synonymList.includes(term)) {
+        synonymList.forEach((s) => expandedTerms.add(s));
+      }
+    });
+  });
+
+  const searchTerms = Array.from(expandedTerms);
   let matchedDeals = POPULAR_CURATED_DEALS;
 
   if (searchTerms.length > 0) {
@@ -415,8 +445,14 @@ app.get("/api/ml/search", async (req, res) => {
       const titleLower = deal.title.toLowerCase();
       const catLower = (deal.categoryName || "").toLowerCase();
       const headlineLower = (deal.headline || "").toLowerCase();
+      const sellerLower = (deal.sellerName || "").toLowerCase();
+      const couponLower = (deal.coupon || "").toLowerCase();
       return searchTerms.some((term) =>
-        titleLower.includes(term) || catLower.includes(term) || headlineLower.includes(term)
+        titleLower.includes(term) ||
+        catLower.includes(term) ||
+        headlineLower.includes(term) ||
+        sellerLower.includes(term) ||
+        couponLower.includes(term)
       );
     });
   }
@@ -946,8 +982,9 @@ app.get("/api/autopilot/scan", async (req, res) => {
 
     const CATEGORY_SEARCH_MAP: Record<string, string> = {
       all: "ofertas relampago mercado livre",
-      tech: "smartphone celular fone bluetooth jbl",
+      country: "chapeu country pralana bota texana goyazes cinto rodeio",
       agro: "chapeu pralana bota texana goyazes couro",
+      tech: "smartphone celular fone bluetooth jbl",
       casa: "air fryer walita cafeteira robo aspirador",
       ferramentas: "parafusadeira furadeira bosch dewalte",
       beleza: "perfume malbec boticario importado",

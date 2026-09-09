@@ -43,8 +43,9 @@ interface AutopilotEngineProps {
 
 const CATEGORIES = [
   { id: 'all', label: '🔥 Todas as Ofertas Quentes', query: 'ofertas relampago' },
+  { id: 'country', label: '🤠 Moda Country & Rodeio (Chapéus, Botas, Cintos)', query: 'chapeu country pralana bota texana goyazes rodeio' },
+  { id: 'agro', label: '🌾 Moda & Agro (Chapéus e Botas)', query: 'chapeu pralana bota goyazes' },
   { id: 'tech', label: '📱 Celulares & Tech', query: 'smartphone fone bluetooth jbl' },
-  { id: 'agro', label: '🤠 Moda & Agro (Chapéus e Botas)', query: 'chapeu pralana bota goyazes' },
   { id: 'casa', label: '🍳 Casa & Cozinha (Air Fryer)', query: 'air fryer walita cafeteira aspirador' },
   { id: 'ferramentas', label: '🛠️ Ferramentas & Oficina', query: 'parafusadeira furadeira bosch' },
   { id: 'beleza', label: '💄 Perfumaria & Beleza', query: 'perfume malbec boticario' },

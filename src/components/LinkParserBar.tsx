@@ -21,8 +21,11 @@ interface LinkParserBarProps {
 }
 
 const QUICK_SEARCH_SUGGESTIONS = [
+  { label: '🤠 Moda Country & Rodeio', query: 'chapeu country pralana bota texana' },
   { label: '🤠 Chapéu Pralana', query: 'Chapéu Pralana Bangora' },
-  { label: '👢 Bota Goyazes', query: 'Bota Goyazes Texana Couro' },
+  { label: '👢 Bota Goyazes Texana', query: 'Bota Goyazes Texana Couro' },
+  { label: '👢 Bota Country Feminina', query: 'Bota Country Feminina Texana Couro' },
+  { label: '🌾 Cinto Country Couro', query: 'Cinto Couro Legitimo Country' },
   { label: '🍟 Air Fryer Walita', query: 'Fritadeira Air Fryer Philips Walita' },
   { label: '🔊 JBL Boombox 3', query: 'Caixa de Som JBL Boombox 3' },
   { label: '📱 Galaxy S24 Ultra', query: 'Smartphone Samsung Galaxy S24' },
