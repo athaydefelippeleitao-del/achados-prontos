@@ -105,7 +105,7 @@ function generateFallbackCopy(title: string, price: number, originalPrice?: numb
 
 // Helper to upgrade Mercado Livre thumbnail to High Definition image
 function upgradeMLImage(url?: string): string {
-  if (!url) return "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80";
+  if (!url) return "https://http2.mlstatic.com/D_Q_NP_2X_735583-MLB110634453978_052026-E-chapeu-pralana-30x-farmer-calgary-aba-11-12951-3315.webp";
   return url.replace(/-I\.(jpg|jpeg|png|webp)/i, "-O.$1").replace(/-V\.(jpg|jpeg|png|webp)/i, "-O.$1");
 }
 
@@ -197,7 +197,7 @@ async function scrapeMercadoLivreHtml(searchQuery: string): Promise<any[]> {
         }
 
         const rawImg = imgMatch ? imgMatch[1] : "";
-        const image = rawImg.startsWith("http") ? upgradeMLImage(rawImg) : "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80";
+        const image = rawImg.startsWith("http") ? upgradeMLImage(rawImg) : "https://http2.mlstatic.com/D_Q_NP_2X_735583-MLB110634453978_052026-E-chapeu-pralana-30x-farmer-calgary-aba-11-12951-3315.webp";
 
         results.push({
           id: extractMLBId(rawLink) || `MLB_SCRAPED_${Date.now()}_${results.length}`,
@@ -269,7 +269,7 @@ Retorne APENAS um array JSON de objetos com:
             disc = Math.round(((origPrice - price) / origPrice) * 100);
           }
 
-          const img = item.thumbnail || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80";
+          const img = item.thumbnail || "https://http2.mlstatic.com/D_Q_NP_2X_735583-MLB110634453978_052026-E-chapeu-pralana-30x-farmer-calgary-aba-11-12951-3315.webp";
 
           return {
             id: `MLB_REAL_${Date.now()}_${idx}`,
@@ -1117,7 +1117,7 @@ app.get("/api/ml/proxy-image", async (req, res) => {
     }
 
     // Fallback if remote image is unreachable: redirect to verified product fallback
-    const fallbackRes = await fetch("https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80");
+    const fallbackRes = await fetch("https://http2.mlstatic.com/D_Q_NP_2X_735583-MLB110634453978_052026-E-chapeu-pralana-30x-farmer-calgary-aba-11-12951-3315.webp");
     const fallbackBuffer = Buffer.from(await fallbackRes.arrayBuffer());
     res.setHeader("Content-Type", "image/jpeg");
     res.setHeader("Cache-Control", "public, max-age=86400");

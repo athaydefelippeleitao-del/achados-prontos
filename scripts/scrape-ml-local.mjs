@@ -7,9 +7,11 @@ const USER_DATA_DIR = path.resolve(process.cwd(), '.ml_browser_session');
 export async function runLocalScraper(options = {}) {
   const { 
     queries = [
+      'calca jeans country masculina carpinteira',
+      'calca king farm masculina original',
+      'chapeu pralana original aba 10',
+      'bota texana country masculina feminina couro',
       'cinto country couro fivela',
-      'bota texana country masculina feminina',
-      'chapeu peao country aba larga',
       'camisa country manga longa bordada'
     ],
     headless = false 
@@ -45,7 +47,7 @@ export async function runLocalScraper(options = {}) {
       console.log('======================================================\n');
 
       let loggedIn = false;
-      for (let i = 0; i < 150; i++) { // aguarda até 5 minutos
+      for (let i = 0; i < 5; i++) { // aguarda 10 segundos
         await page.waitForTimeout(2000);
         const currentUrl = page.url();
         if (!currentUrl.includes('/login/') && !currentUrl.includes('identification')) {
@@ -187,18 +189,31 @@ export async function runLocalScraper(options = {}) {
       }
     }
 
-    // Remove duplicados por ID
+    // Carrega produtos existentes para não perder nada
+    const outputPath = path.resolve(process.cwd(), 'src/data/liveScrapedCountryDeals.json');
+    let existingDeals = [];
+    if (fs.existsSync(outputPath)) {
+      try {
+        existingDeals = JSON.parse(fs.readFileSync(outputPath, 'utf-8'));
+      } catch {}
+    }
+
+    // Remove duplicados por ID, priorizando os novos
     const uniqueMap = new Map();
     for (const d of allDeals) {
-      if (!uniqueMap.has(d.id)) {
+      if (d.thumbnail && d.thumbnail.startsWith('http')) {
+        uniqueMap.set(d.id, d);
+      }
+    }
+    for (const d of existingDeals) {
+      if (!uniqueMap.has(d.id) && d.thumbnail && d.thumbnail.startsWith('http')) {
         uniqueMap.set(d.id, d);
       }
     }
     const finalDeals = Array.from(uniqueMap.values());
 
-    console.log(`\n🎯 Total de promoções reais capturadas: ${finalDeals.length}`);
+    console.log(`\n🎯 Total de promoções reais capturadas e combinadas: ${finalDeals.length}`);
 
-    const outputPath = path.resolve(process.cwd(), 'src/data/liveScrapedCountryDeals.json');
     fs.writeFileSync(outputPath, JSON.stringify(finalDeals, null, 2), 'utf-8');
     console.log(`💾 Salvo com sucesso em: ${outputPath}`);
 

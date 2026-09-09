@@ -71,7 +71,37 @@ export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) =>
     if (cat.id === 'all') {
       setDeals(POPULAR_CURATED_DEALS);
     } else {
-      fetchDeals(cat.query);
+      // Immediate local filter from all real scraped deals to instantly show authentic item photos
+      let localMatches = POPULAR_CURATED_DEALS;
+      if (cat.id === 'botas') {
+        localMatches = POPULAR_CURATED_DEALS.filter(d => {
+          const t = d.title.toLowerCase();
+          return t.includes('bota') || t.includes('texana') || t.includes('botina') || t.includes('dgo');
+        });
+      } else if (cat.id === 'calcas') {
+        localMatches = POPULAR_CURATED_DEALS.filter(d => {
+          const t = d.title.toLowerCase();
+          return t.includes('calça') || t.includes('calca') || t.includes('king farm') || t.includes('muladeira') || t.includes('carpinteira') || t.includes('jeans');
+        });
+      } else if (cat.id === 'camisas') {
+        localMatches = POPULAR_CURATED_DEALS.filter(d => {
+          const t = d.title.toLowerCase();
+          return t.includes('camisa') || t.includes('xadrez') || t.includes('polo');
+        });
+      } else if (cat.id === 'chapeus') {
+        localMatches = POPULAR_CURATED_DEALS.filter(d => {
+          const t = d.title.toLowerCase();
+          return t.includes('chapéu') || t.includes('chapeu') || t.includes('pralana') || t.includes('karandá') || t.includes('karanda');
+        });
+      } else if (cat.id === 'cintos') {
+        localMatches = POPULAR_CURATED_DEALS.filter(d => {
+          const t = d.title.toLowerCase();
+          return t.includes('cinto') || t.includes('fivela');
+        });
+      } else if (cat.id === 'cupons') {
+        localMatches = POPULAR_CURATED_DEALS.filter(d => Boolean(d.coupon));
+      }
+      setDeals(localMatches.length > 0 ? localMatches : POPULAR_CURATED_DEALS);
     }
   };
 

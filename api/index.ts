@@ -68,8 +68,8 @@ const LIVE_SCRAPED_DEALS: ProductDeal[] = (Array.isArray(liveScrapedData) ? live
     discountPercentage: calculated.discountPercentage,
     currency_id: 'BRL',
     permalink: d.permalink,
-    thumbnail: d.thumbnail || 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
-    fullImage: d.thumbnail || 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
+    thumbnail: d.thumbnail || 'https://http2.mlstatic.com/D_Q_NP_2X_748154-MLB113338560227_062026-E-cinto-country-couro-ariat-fivela-grande-removivel-rodeio.webp',
+    fullImage: d.thumbnail || 'https://http2.mlstatic.com/D_Q_NP_2X_748154-MLB113338560227_062026-E-cinto-country-couro-ariat-fivela-grande-removivel-rodeio.webp',
     freeShipping: Boolean(d.freeShipping),
     sellerName: 'Mercado Livre',
     ratings: 4.9,
@@ -93,8 +93,8 @@ const INITIAL_USER_EXAMPLE_DEAL: ProductDeal = {
   discountPercentage: 12,
   currency_id: 'BRL',
   permalink: 'https://produto.mercadolivre.com.br/MLB-1096532545-chapeu-pralana-classic-5x-repelente-agua-l-importada-top-_JM',
-  thumbnail: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
-  fullImage: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
+  thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_702244-MLB31580586596_072019-E-chapeu-casual-alabama-pralana-original-cafe-aba8-frete-pago.webp',
+  fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_702244-MLB31580586596_072019-E-chapeu-casual-alabama-pralana-original-cafe-aba8-frete-pago.webp',
   freeShipping: true,
   sellerName: 'Loja Oficial Pralana',
   ratings: 4.9,
@@ -113,8 +113,8 @@ export const FELIPAO_EXACT_DEALS: ProductDeal[] = [
     discountPercentage: 22,
     currency_id: 'BRL',
     permalink: 'https://meli.la/1anpGxx',
-    thumbnail: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_857677-MLB84370784478_052025-E-calca-jeans-king-farm-black-carpinteira-country-5539.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_857677-MLB84370784478_052025-E-calca-jeans-king-farm-black-carpinteira-country-5539.webp',
     freeShipping: true,
     sellerName: 'King Farm Oficial',
     ratings: 5.0,
@@ -132,8 +132,8 @@ export const FELIPAO_EXACT_DEALS: ProductDeal[] = [
     discountPercentage: 22,
     currency_id: 'BRL',
     permalink: 'https://meli.la/128dMJa',
-    thumbnail: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_842960-MLB87010746255_062025-E-camisa-masculina-radade-bordada-vermelha-barretos-erva.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_842960-MLB87010746255_062025-E-camisa-masculina-radade-bordada-vermelha-barretos-erva.webp',
     freeShipping: true,
     sellerName: 'Barretos Country',
     ratings: 4.9,
@@ -151,8 +151,8 @@ export const FELIPAO_EXACT_DEALS: ProductDeal[] = [
     discountPercentage: 68,
     currency_id: 'BRL',
     permalink: 'https://meli.la/2JkkQ5M',
-    thumbnail: 'https://images.unsplash.com/photo-1582552938357-32b906df40cb?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1582552938357-32b906df40cb?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_986003-MLB83082216051_032025-E-kit-3-calca-country-muladeira-carpinteira-masculina-rodeio.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_986003-MLB83082216051_032025-E-kit-3-calca-country-muladeira-carpinteira-masculina-rodeio.webp',
     freeShipping: true,
     sellerName: 'Muladeira & Rodeio',
     ratings: 4.8,
@@ -189,8 +189,8 @@ export const FELIPAO_EXACT_DEALS: ProductDeal[] = [
     discountPercentage: 16,
     currency_id: 'BRL',
     permalink: 'https://produto.mercadolivre.com.br/MLB-2080410502-chapeu-pralana-original-aba-10-fazenda-rodeio-cavalaria-_JM',
-    thumbnail: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_702244-MLB31580586596_072019-E-chapeu-casual-alabama-pralana-original-cafe-aba8-frete-pago.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_702244-MLB31580586596_072019-E-chapeu-casual-alabama-pralana-original-cafe-aba8-frete-pago.webp',
     freeShipping: true,
     sellerName: 'Pralana Oficial',
     ratings: 4.9,
@@ -208,8 +208,8 @@ export const FELIPAO_EXACT_DEALS: ProductDeal[] = [
     discountPercentage: 17,
     currency_id: 'BRL',
     permalink: 'https://produto.mercadolivre.com.br/MLB-3907298030-chapeu-pralana-branco-original-aba-larga-country-rodeio-_JM',
-    thumbnail: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_702244-MLB31580586596_072019-E-chapeu-casual-alabama-pralana-original-cafe-aba8-frete-pago.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_702244-MLB31580586596_072019-E-chapeu-casual-alabama-pralana-original-cafe-aba8-frete-pago.webp',
     freeShipping: true,
     sellerName: 'Pralana Oficial',
     ratings: 5.0,
@@ -235,8 +235,8 @@ const POPULAR_CURATED_DEALS: ProductDeal[] = [
     discountPercentage: 42,
     currency_id: 'BRL',
     permalink: 'https://produto.mercadolivre.com.br/MLB-4931628697-cinto-country-couro-fivela-longhorn-pampas-cabeca-de-boi-preto-120-cm-serve-calca-n-48-_JM',
-    thumbnail: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_748154-MLB113338560227_062026-E-cinto-country-couro-ariat-fivela-grande-removivel-rodeio.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_748154-MLB113338560227_062026-E-cinto-country-couro-ariat-fivela-grande-removivel-rodeio.webp',
     freeShipping: true,
     sellerName: "Pampa's Country Oficial",
     ratings: 5.0,
@@ -253,8 +253,8 @@ const POPULAR_CURATED_DEALS: ProductDeal[] = [
     discountPercentage: 24,
     currency_id: 'BRL',
     permalink: 'https://produto.mercadolivre.com.br/MLB-3637654072-cinto-country-couro-legitimo-masculino-bordado-fivela-cowboy-_JM',
-    thumbnail: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_748154-MLB113338560227_062026-E-cinto-country-couro-ariat-fivela-grande-removivel-rodeio.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_748154-MLB113338560227_062026-E-cinto-country-couro-ariat-fivela-grande-removivel-rodeio.webp',
     freeShipping: true,
     sellerName: 'Couro & Rodeio',
     ratings: 4.9,
@@ -271,8 +271,8 @@ const POPULAR_CURATED_DEALS: ProductDeal[] = [
     discountPercentage: 16,
     currency_id: 'BRL',
     permalink: 'https://produto.mercadolivre.com.br/MLB-2080410502-chapeu-pralana-original-para-usar-na-fazenda-rodeio-_JM',
-    thumbnail: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_702244-MLB31580586596_072019-E-chapeu-casual-alabama-pralana-original-cafe-aba8-frete-pago.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_702244-MLB31580586596_072019-E-chapeu-casual-alabama-pralana-original-cafe-aba8-frete-pago.webp',
     freeShipping: true,
     sellerName: 'Loja Pralana',
     ratings: 4.8,
@@ -289,8 +289,8 @@ const POPULAR_CURATED_DEALS: ProductDeal[] = [
     discountPercentage: 15,
     currency_id: 'BRL',
     permalink: 'https://produto.mercadolivre.com.br/MLB-5250276338-chapeu-pralana-3-cravos-personalizado-original-_JM',
-    thumbnail: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_702244-MLB31580586596_072019-E-chapeu-casual-alabama-pralana-original-cafe-aba8-frete-pago.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_702244-MLB31580586596_072019-E-chapeu-casual-alabama-pralana-original-cafe-aba8-frete-pago.webp',
     freeShipping: true,
     sellerName: 'Loja Oficial Pralana',
     ratings: 4.9,
@@ -307,8 +307,8 @@ const POPULAR_CURATED_DEALS: ProductDeal[] = [
     discountPercentage: 17,
     currency_id: 'BRL',
     permalink: 'https://produto.mercadolivre.com.br/MLB-3907298030-chapeu-pralana-branco-original-_JM',
-    thumbnail: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_702244-MLB31580586596_072019-E-chapeu-casual-alabama-pralana-original-cafe-aba8-frete-pago.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_702244-MLB31580586596_072019-E-chapeu-casual-alabama-pralana-original-cafe-aba8-frete-pago.webp',
     freeShipping: true,
     sellerName: 'Pralana Western',
     ratings: 4.8,
@@ -325,8 +325,8 @@ const POPULAR_CURATED_DEALS: ProductDeal[] = [
     discountPercentage: 22,
     currency_id: 'BRL',
     permalink: 'https://produto.mercadolivre.com.br/MLB-3610991959-bota-texana-masculina-couro-tabaco-ekip-rozeta-brinde-_JM',
-    thumbnail: 'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_804636-MLB86082899598_062025-E-bota-country-trisse-masculina-texana-couro-4country.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_804636-MLB86082899598_062025-E-bota-country-trisse-masculina-texana-couro-4country.webp',
     freeShipping: true,
     sellerName: 'Ekip Rozeta Oficial',
     ratings: 4.9,
@@ -343,8 +343,8 @@ const POPULAR_CURATED_DEALS: ProductDeal[] = [
     discountPercentage: 23,
     currency_id: 'BRL',
     permalink: 'https://produto.mercadolivre.com.br/MLB-3619567990-kit-agro-bota-texana-couro-legitimo-bone-country-trucker-_JM',
-    thumbnail: 'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_804636-MLB86082899598_062025-E-bota-country-trisse-masculina-texana-couro-4country.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_804636-MLB86082899598_062025-E-bota-country-trisse-masculina-texana-couro-4country.webp',
     freeShipping: true,
     sellerName: 'Botas Country Oficial',
     ratings: 4.9,
@@ -361,8 +361,8 @@ const POPULAR_CURATED_DEALS: ProductDeal[] = [
     discountPercentage: 25,
     currency_id: 'BRL',
     permalink: 'https://produto.mercadolivre.com.br/MLB-3619567997-bota-texana-feminina-couro-legitimo-confortavel-moderna-_JM',
-    thumbnail: 'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_804636-MLB86082899598_062025-E-bota-country-trisse-masculina-texana-couro-4country.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_804636-MLB86082899598_062025-E-bota-country-trisse-masculina-texana-couro-4country.webp',
     freeShipping: true,
     sellerName: 'Texanas Brasil',
     ratings: 4.9,
@@ -379,8 +379,8 @@ const POPULAR_CURATED_DEALS: ProductDeal[] = [
     discountPercentage: 22,
     currency_id: 'BRL',
     permalink: 'https://produto.mercadolivre.com.br/MLB-2810244133-camisa-country-masculina-xadrez-pequeno-ox-horns-para-lida-_JM',
-    thumbnail: 'https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_705811-MLB84663483237_052025-E-camisa-country-social-bordada-mangalarga-marchador.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_705811-MLB84663483237_052025-E-camisa-country-social-bordada-mangalarga-marchador.webp',
     freeShipping: true,
     sellerName: 'Ox Horns Oficial',
     ratings: 4.7,
@@ -397,8 +397,8 @@ const POPULAR_CURATED_DEALS: ProductDeal[] = [
     discountPercentage: 24,
     currency_id: 'BRL',
     permalink: 'https://produto.mercadolivre.com.br/MLB-5191430888-calca-jeans-country-masculina-costura-reforcada-kit-2-unid-_JM',
-    thumbnail: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_646177-MLB98123467505_112025-E-calca-masculina-country-tradicional-rodeio-reforcada-premium.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_646177-MLB98123467505_112025-E-calca-masculina-country-tradicional-rodeio-reforcada-premium.webp',
     freeShipping: true,
     sellerName: 'Rodeio Jeans',
     ratings: 4.7,
@@ -417,8 +417,8 @@ const POPULAR_CURATED_DEALS: ProductDeal[] = [
     discountPercentage: 28,
     currency_id: 'BRL',
     permalink: 'https://produto.mercadolivre.com.br/MLB-3561334997-fritadeira-eletrica-air-fryer-philips-walita-serie-1000-62l-_JM',
-    thumbnail: 'https://images.unsplash.com/photo-1585659722983-3a675dabf23d?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1585659722983-3a675dabf23d?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_750953-MLB84333917467_052025-E.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_750953-MLB84333917467_052025-E.webp',
     freeShipping: true,
     sellerName: 'Philips Walita Loja Oficial',
     ratings: 4.8,
@@ -435,8 +435,8 @@ const POPULAR_CURATED_DEALS: ProductDeal[] = [
     discountPercentage: 22,
     currency_id: 'BRL',
     permalink: 'https://produto.mercadolivre.com.br/MLB-3914957733-cafeteira-nespresso-essenza-mini-c30-automatica-branca-127v-_JM',
-    thumbnail: 'https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=800&auto=format&fit=crop&q=80',
-    fullImage: 'https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=800&auto=format&fit=crop&q=80',
+    thumbnail: 'https://http2.mlstatic.com/D_Q_NP_2X_758778-MLA80429446820_112024-E.webp',
+    fullImage: 'https://http2.mlstatic.com/D_Q_NP_2X_758778-MLA80429446820_112024-E.webp',
     freeShipping: true,
     sellerName: 'Nespresso Brasil',
     ratings: 4.9,
@@ -509,7 +509,7 @@ function generateFallbackCopy(title: string, price: number, originalPrice?: numb
 }
 
 function upgradeMLImage(url?: string): string {
-  if (!url) return "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80";
+  if (!url) return "https://http2.mlstatic.com/D_Q_NP_2X_735583-MLB110634453978_052026-E-chapeu-pralana-30x-farmer-calgary-aba-11-12951-3315.webp";
   return url.replace(/-I\.(jpg|jpeg|png|webp)/i, "-O.$1").replace(/-V\.(jpg|jpeg|png|webp)/i, "-O.$1");
 }
 
@@ -565,7 +565,7 @@ async function scrapeMercadoLivreHtml(searchQuery: string): Promise<any[]> {
         let discountPercentage = 0;
         if (originalPrice && originalPrice > price) discountPercentage = Math.round(((originalPrice - price) / originalPrice) * 100);
         const rawImg = imgMatch ? imgMatch[1] : "";
-        const image = rawImg.startsWith("http") ? upgradeMLImage(rawImg) : "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80";
+        const image = rawImg.startsWith("http") ? upgradeMLImage(rawImg) : "https://http2.mlstatic.com/D_Q_NP_2X_735583-MLB110634453978_052026-E-chapeu-pralana-30x-farmer-calgary-aba-11-12951-3315.webp";
         results.push({ id: extractMLBId(rawLink) || `MLB_SCRAPED_${Date.now()}_${results.length}`, title: cleanTitle, headline: `🔥 OFERTA REAL: ${cleanTitle.toUpperCase().slice(0, 38)}`, price, originalPrice, discountPercentage, currency_id: "BRL", permalink: rawLink, thumbnail: image, fullImage: image, freeShipping: isFreeShipping, sellerName: "Mercado Livre", ratings: 4.8, reviewsCount: 280, categoryName: searchQuery });
       }
     }
@@ -591,7 +591,7 @@ async function searchRealMLWithGrounding(searchQuery: string): Promise<any[]> {
           const origPrice = item.originalPrice ? Number(item.originalPrice) : null;
           let disc = item.discountPercentage || 0;
           if (origPrice && origPrice > price && !disc) disc = Math.round(((origPrice - price) / origPrice) * 100);
-          const img = item.thumbnail || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80";
+          const img = item.thumbnail || "https://http2.mlstatic.com/D_Q_NP_2X_735583-MLB110634453978_052026-E-chapeu-pralana-30x-farmer-calgary-aba-11-12951-3315.webp";
           return { id: `MLB_REAL_${Date.now()}_${idx}`, title, headline: `🔥 OFERTA REAL: ${title.toUpperCase().slice(0, 38)}`, price, originalPrice: origPrice, discountPercentage: disc, currency_id: "BRL", permalink: validLink, thumbnail: img, fullImage: upgradeMLImage(img), freeShipping: item.freeShipping ?? true, sellerName: item.sellerName || "Mercado Livre", ratings: 4.8, reviewsCount: 320, categoryName: searchQuery };
         });
       }
@@ -939,7 +939,7 @@ app.get("/api/ml/proxy-image", async (req, res) => {
         return res.send(Buffer.from(await imageRes.arrayBuffer()));
       }
     } catch { /* fallback */ }
-    const fallbackRes = await fetch("https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80");
+    const fallbackRes = await fetch("https://http2.mlstatic.com/D_Q_NP_2X_735583-MLB110634453978_052026-E-chapeu-pralana-30x-farmer-calgary-aba-11-12951-3315.webp");
     res.setHeader("Content-Type", "image/jpeg");
     res.setHeader("Cache-Control", "public, max-age=86400");
     res.setHeader("Access-Control-Allow-Origin", "*");
