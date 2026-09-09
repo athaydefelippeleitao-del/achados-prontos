@@ -600,6 +600,19 @@ async function searchRealMLWithGrounding(searchQuery: string): Promise<any[]> {
   return [];
 }
 
+function finalizeWithCoupon(deals: any[]): any[] {
+  return (deals || []).map((deal) => {
+    const calc = applyCouponDiscount(deal.price, deal.originalPrice, deal.discountPercentage);
+    return {
+      ...deal,
+      price: calc.price,
+      originalPrice: calc.originalPrice,
+      discountPercentage: calc.discountPercentage,
+      coupon: deal.coupon || "OFERTASEMPRE"
+    };
+  });
+}
+
 // ─── Routes ──────────────────────────────────────────────────────────────────
 
 // 1. Health
@@ -613,9 +626,9 @@ app.get("/api/ml/search", async (req, res) => {
   const searchQuery = ((q as string) || "").trim();
   if (searchQuery) {
     const liveScraped = await scrapeMercadoLivreHtml(searchQuery);
-    if (liveScraped.length > 0) return res.json({ results: liveScraped, paging: { total: liveScraped.length, offset: 0, limit: 24 }, query: searchQuery, source: "mercadolivre_live_html" });
+    if (liveScraped.length > 0) return res.json({ results: finalizeWithCoupon(liveScraped), paging: { total: liveScraped.length, offset: 0, limit: 24 }, query: searchQuery, source: "mercadolivre_live_html" });
     const groundedDeals = await searchRealMLWithGrounding(searchQuery);
-    if (groundedDeals.length > 0) return res.json({ results: groundedDeals, paging: { total: groundedDeals.length, offset: 0, limit: 24 }, query: searchQuery, source: "google_search_grounding" });
+    if (groundedDeals.length > 0) return res.json({ results: finalizeWithCoupon(groundedDeals), paging: { total: groundedDeals.length, offset: 0, limit: 24 }, query: searchQuery, source: "google_search_grounding" });
   }
   try {
     const params = new URLSearchParams({ q: searchQuery || "ofertas relampago", limit: String(limit), offset: String(offset), site_id: "MLB" });
@@ -635,7 +648,7 @@ app.get("/api/ml/search", async (req, res) => {
           if (originalPrice && originalPrice > price) discountPercentage = Math.round(((originalPrice - price) / originalPrice) * 100);
           return { id: item.id, title: item.title, headline: `🔥 OFERTA REAL: ${item.title.toUpperCase().slice(0, 38)}`, price, originalPrice, discountPercentage, currency_id: item.currency_id || "BRL", permalink: item.permalink, thumbnail: item.thumbnail, fullImage: upgradeMLImage(item.thumbnail), installments: item.installments ? { quantity: item.installments.quantity, amount: item.installments.amount, rate: item.installments.rate } : null, freeShipping: item.shipping?.free_shipping || false, condition: item.condition, sellerName: item.seller?.nickname || "Mercado Livre", ratings: 4.8, reviewsCount: 140 };
         });
-        return res.json({ results, paging: data.paging || { total: results.length, offset: 0, limit: 24 }, query: searchQuery, source: "mercadolivre_api" });
+        return res.json({ results: finalizeWithCoupon(results), paging: data.paging || { total: results.length, offset: 0, limit: 24 }, query: searchQuery, source: "mercadolivre_api" });
       }
     }
   } catch { /* fallback */ }
@@ -679,7 +692,7 @@ app.get("/api/ml/search", async (req, res) => {
     } catch { /* fallback */ }
   }
   const results = matchedDeals.length > 0 ? matchedDeals : POPULAR_CURATED_DEALS;
-  return res.json({ results, paging: { total: results.length, offset: 0, limit: 24 }, query: searchQuery, source: "curated_catalog" });
+  return res.json({ results: finalizeWithCoupon(results), paging: { total: results.length, offset: 0, limit: 24 }, query: searchQuery, source: "curated_catalog" });
 });
 
 // 3. Get item by ID
@@ -891,7 +904,8 @@ app.get("/api/autopilot/scan", async (req, res) => {
     let filtered = liveCandidates.filter((d) => { if (minDiscount > 0 && (d.discountPercentage || 0) < minDiscount) return false; if (onlyFreeShipping && !d.freeShipping) return false; if (onlyWithCoupon && !d.coupon) return false; return true; });
     if (filtered.length === 0) filtered = liveCandidates;
     const selectedDeal = filtered[Math.floor(Math.random() * filtered.length)];
-    return res.json({ deal: selectedDeal, totalCandidates: filtered.length, source: selectedDeal.id.startsWith("MLB_SCRAPED") ? "mercadolivre_live" : "curated_deals", timestamp: new Date().toISOString() });
+    const dealWithCoupon = finalizeWithCoupon([selectedDeal])[0];
+    return res.json({ deal: dealWithCoupon, totalCandidates: filtered.length, source: selectedDeal.id.startsWith("MLB_SCRAPED") ? "mercadolivre_live" : "curated_deals", timestamp: new Date().toISOString() });
   } catch (error: any) {
     res.status(500).json({ error: error.message || "Erro no scanner do piloto automático." });
   }
