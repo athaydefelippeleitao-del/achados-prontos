@@ -54,7 +54,8 @@ export function compileTemplate(
   const precoDeFormatted = data.originalPrice
     ? formatCurrencyBRL(data.originalPrice)
     : formatCurrencyBRL(data.price * 1.2); // Fallback estimate if no old price
-  const precoPorFormatted = formatCurrencyBRL(data.price);
+  const hasCents = (Math.round(data.price * 100) % 100) !== 0;
+  const precoPorFormatted = hasCents ? `${formatCurrencyBRL(data.price)} no pix` : formatCurrencyBRL(data.price);
 
   const discount =
     data.discountPercentage ||
@@ -68,11 +69,9 @@ export function compileTemplate(
 
   const freteStr = data.freeShipping ? 'Frete Grátis Full 🚚⚡' : 'Consulte o frete';
 
-  // Coupon line formatting (respecting the user's example: ⚠️ cupom: MODAPRAVC)
-  let cupomLine = '';
-  if (data.coupon && data.coupon.trim()) {
-    cupomLine = `⚠️ cupom: ${data.coupon.trim().toUpperCase()}`;
-  }
+  // Coupon line formatting (matching user's screenshots: ⚠️ Cupom: OFERTASEMPRE)
+  const effectiveCoupon = (data.coupon && data.coupon.trim()) || 'OFERTASEMPRE';
+  const cupomLine = `⚠️ Cupom: ${effectiveCoupon.toUpperCase()}`;
 
   const effectiveLink = (data.link && data.link.trim()) || 'https://meli.la/2QGwovg';
 
