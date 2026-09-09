@@ -1,4 +1,29 @@
 import { ProductDeal } from '../types';
+import liveScrapedData from './liveScrapedCountryDeals.json';
+
+const LIVE_SCRAPED_DEALS: ProductDeal[] = (Array.isArray(liveScrapedData) ? liveScrapedData : []).map((d: any) => ({
+  id: d.id,
+  title: d.title,
+  headline: `🔥 ${d.title.toUpperCase().slice(0, 40)} 🤠🌾`,
+  price: Number(d.price) || 0,
+  originalPrice: d.originalPrice ? Number(d.originalPrice) : null,
+  discountPercentage: Number(d.discountPercentage) || 0,
+  currency_id: 'BRL',
+  permalink: d.permalink,
+  thumbnail: d.thumbnail || 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
+  fullImage: d.thumbnail || 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
+  freeShipping: Boolean(d.freeShipping),
+  sellerName: 'Mercado Livre',
+  ratings: 4.9,
+  reviewsCount: 120,
+  categoryName: 'Moda Country & Agro',
+  coupon: d.coupon,
+  installments: {
+    quantity: 12,
+    amount: Math.round(((Number(d.price) || 0) / 12) * 100) / 100,
+    rate: 0
+  }
+}));
 
 export const INITIAL_USER_EXAMPLE_DEAL: ProductDeal = {
   id: 'MLB-1096532545',
@@ -20,6 +45,7 @@ export const INITIAL_USER_EXAMPLE_DEAL: ProductDeal = {
 };
 
 export const POPULAR_CURATED_DEALS: ProductDeal[] = [
+  ...LIVE_SCRAPED_DEALS,
   INITIAL_USER_EXAMPLE_DEAL,
 
   // ── Country & Agro (Produtos 100% Reais com Links Diretos Ativos no Mercado Livre) ─────
