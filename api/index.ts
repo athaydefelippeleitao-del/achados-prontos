@@ -10,6 +10,11 @@
 import express from "express";
 import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const liveScrapedData = require("../src/data/liveScrapedCountryDeals.json");
+
 interface ProductDeal {
   id: string;
   title: string;
@@ -34,27 +39,6 @@ interface ProductDeal {
   description?: string;
 }
 
-const INITIAL_USER_EXAMPLE_DEAL: ProductDeal = {
-  id: 'MLB-1096532545',
-  title: 'Chapéu Pralana Classic 5X Repelente Água Lã Importada Original',
-  headline: 'CHAPÉU PRALANA CLASSIC 5X EM LÃ IMPORTADA 🤠🌾🐎',
-  price: 429.00,
-  originalPrice: 489.00,
-  discountPercentage: 12,
-  currency_id: 'BRL',
-  permalink: 'https://produto.mercadolivre.com.br/MLB-1096532545-chapeu-pralana-classic-5x-repelente-agua-l-importada-top-_JM',
-  thumbnail: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
-  fullImage: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
-  freeShipping: true,
-  sellerName: 'Loja Oficial Pralana',
-  ratings: 4.9,
-  reviewsCount: 342,
-  categoryName: 'Moda Country & Agro',
-  installments: { quantity: 10, amount: 42.90, rate: 0 },
-};
-
-import liveScrapedData from '../src/data/liveScrapedCountryDeals.json';
-
 const LIVE_SCRAPED_DEALS: ProductDeal[] = (Array.isArray(liveScrapedData) ? liveScrapedData : []).map((d: any) => ({
   id: d.id,
   title: d.title,
@@ -78,6 +62,25 @@ const LIVE_SCRAPED_DEALS: ProductDeal[] = (Array.isArray(liveScrapedData) ? live
     rate: 0
   }
 }));
+
+const INITIAL_USER_EXAMPLE_DEAL: ProductDeal = {
+  id: 'MLB-1096532545',
+  title: 'Chapéu Pralana Classic 5X Repelente Água Lã Importada Original',
+  headline: 'CHAPÉU PRALANA CLASSIC 5X EM LÃ IMPORTADA 🤠🌾🐎',
+  price: 429.00,
+  originalPrice: 489.00,
+  discountPercentage: 12,
+  currency_id: 'BRL',
+  permalink: 'https://produto.mercadolivre.com.br/MLB-1096532545-chapeu-pralana-classic-5x-repelente-agua-l-importada-top-_JM',
+  thumbnail: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
+  fullImage: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=800&auto=format&fit=crop&q=80',
+  freeShipping: true,
+  sellerName: 'Loja Oficial Pralana',
+  ratings: 4.9,
+  reviewsCount: 342,
+  categoryName: 'Moda Country & Agro',
+  installments: { quantity: 10, amount: 42.90, rate: 0 },
+};
 
 const POPULAR_CURATED_DEALS: ProductDeal[] = [
   ...LIVE_SCRAPED_DEALS,
