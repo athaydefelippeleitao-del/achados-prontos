@@ -675,11 +675,25 @@ app.get("/api/ml/search", async (req, res) => {
       if (key === term || synonymList.includes(term)) synonymList.forEach((s) => expandedTerms.add(s));
     });
   });
-  const allTerms = Array.from(expandedTerms);
-  let matchedDeals = allTerms.length > 0 ? POPULAR_CURATED_DEALS.filter((d) => {
-    const t = d.title.toLowerCase(); const c = (d.categoryName || "").toLowerCase(); const h = (d.headline || "").toLowerCase(); const s = (d.sellerName || "").toLowerCase();
-    return allTerms.some((term) => t.includes(term) || c.includes(term) || h.includes(term) || s.includes(term));
-  }) : POPULAR_CURATED_DEALS;
+  let matchedDeals: any[] = [];
+  if (searchTerms.length > 0) {
+    // 1. Try exact term matching first (e.g. title includes "bota" or "calca")
+    matchedDeals = POPULAR_CURATED_DEALS.filter((d) => {
+      const t = d.title.toLowerCase();
+      return searchTerms.some((term) => t.includes(term));
+    });
+
+    // 2. If no direct matches, fallback to synonym matching
+    if (matchedDeals.length === 0) {
+      matchedDeals = POPULAR_CURATED_DEALS.filter((d) => {
+        const t = d.title.toLowerCase();
+        const c = (d.categoryName || "").toLowerCase();
+        return allTerms.some((term) => t.includes(term) || c.includes(term));
+      });
+    }
+  } else {
+    matchedDeals = POPULAR_CURATED_DEALS;
+  }
 
   if (matchedDeals.length === 0 && searchQuery && process.env.GEMINI_API_KEY) {
     try {
