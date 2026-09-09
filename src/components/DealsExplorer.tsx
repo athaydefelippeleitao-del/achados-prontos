@@ -25,15 +25,13 @@ interface DealsExplorerProps {
 }
 
 const CATEGORY_CHIPS = [
-  { id: 'all', label: '🔥 Todas as Ofertas', query: 'ofertas relampago' },
-  { id: 'country', label: '🤠 Country & Rodeio', query: 'chapeu country pralana bota texana rodeio' },
-  { id: 'agro', label: '🌾 Moda Agro', query: 'chapeu botas agro couro western' },
-  { id: 'tech', label: '📱 Celulares & Tech', query: 'smartphone fone notebook' },
-  { id: 'casa', label: '🍳 Casa & Cozinha', query: 'air fryer panela cafeteira' },
-  { id: 'gamer', label: '🎮 Gamer & PC', query: 'headset gamer teclado monitor' },
-  { id: 'ferramentas', label: '🛠️ Ferramentas', query: 'parafusadeira furadeira bosch' },
-  { id: 'beleza', label: '💄 Perfumaria & Beleza', query: 'perfume boticario maquiagem' },
-  { id: 'moda', label: '👕 Calçados & Roupas', query: 'tenis jaqueta corta vento' },
+  { id: 'all', label: '🔥 Todas as Ofertas', query: 'ofertas relampago country agro' },
+  { id: 'botas', label: '👢 Botas Texanas', query: 'bota texana country masculina feminina couro dgo' },
+  { id: 'calcas', label: '👖 Calças Country', query: 'calca king farm muladeira carpinteira jeans country' },
+  { id: 'camisas', label: '👔 Camisas Xadrez', query: 'camisa xadrez country barretos manga longa' },
+  { id: 'chapeus', label: '🤠 Chapéus Pralana', query: 'chapeu pralana country aba larga peao' },
+  { id: 'cintos', label: '⭐ Cintos & Fivelas', query: 'cinto country couro fivela pampas' },
+  { id: 'cupons', label: '🎟️ Só com Cupom OFERTASEMPRE', query: 'cupom desconto country' },
 ];
 
 export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) => {
@@ -48,7 +46,7 @@ export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) =>
   const fetchDeals = async (query: string) => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/ml/search?q=${encodeURIComponent(query)}&limit=24`);
+      const response = await fetch(`/api/ml/search?q=${encodeURIComponent(query)}&limit=36`);
       if (response.ok) {
         const data = await response.json();
         if (data.results && data.results.length > 0) {
@@ -70,7 +68,11 @@ export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) =>
   const handleCategorySelect = (cat: typeof CATEGORY_CHIPS[0]) => {
     setSelectedCategory(cat.id);
     setSearchQuery('');
-    fetchDeals(cat.query);
+    if (cat.id === 'all') {
+      setDeals(POPULAR_CURATED_DEALS);
+    } else {
+      fetchDeals(cat.query);
+    }
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -80,8 +82,24 @@ export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) =>
     }
   };
 
-  // Filter deals by discount and free shipping
+  // Filter deals by category, discount and free shipping
   const filteredDeals = deals.filter((d) => {
+    const t = (d.title || '').toLowerCase();
+
+    if (selectedCategory === 'botas') {
+      if (!t.includes('bota') && !t.includes('texana') && !t.includes('botina') && !t.includes('dgo')) return false;
+    } else if (selectedCategory === 'calcas') {
+      if (!t.includes('calça') && !t.includes('calca') && !t.includes('king farm') && !t.includes('muladeira') && !t.includes('carpinteira') && !t.includes('jeans')) return false;
+    } else if (selectedCategory === 'camisas') {
+      if (!t.includes('camisa') && !t.includes('xadrez')) return false;
+    } else if (selectedCategory === 'chapeus') {
+      if (!t.includes('chapéu') && !t.includes('chapeu') && !t.includes('pralana') && !t.includes('karandá') && !t.includes('karanda')) return false;
+    } else if (selectedCategory === 'cintos') {
+      if (!t.includes('cinto') && !t.includes('fivela')) return false;
+    } else if (selectedCategory === 'cupons') {
+      if (!d.coupon) return false;
+    }
+
     if (minDiscount > 0 && (d.discountPercentage || 0) < minDiscount) {
       return false;
     }
@@ -239,8 +257,9 @@ export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) =>
                   )}
 
                   {deal.coupon && (
-                    <div className="absolute bottom-2 left-3 right-3 bg-yellow-400/90 text-slate-950 text-[10px] font-extrabold px-2 py-0.5 rounded text-center truncate">
-                      ⚠️ cupom: {deal.coupon}
+                    <div className="absolute bottom-2 left-3 right-3 bg-yellow-400 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded shadow text-center truncate flex items-center justify-center gap-1">
+                      <span>⚠️ Cupom:</span>
+                      <span className="font-extrabold underline">{deal.coupon}</span>
                     </div>
                   )}
                 </div>
@@ -265,11 +284,20 @@ export const DealsExplorer: React.FC<DealsExplorerProps> = ({ onSelectDeal }) =>
                         De: {formatCurrencyBRL(deal.originalPrice)}
                       </span>
                     )}
-                    <div className="flex items-baseline gap-1.5">
+                    <div className="flex items-baseline gap-1.5 flex-wrap">
                       <span className="text-xs text-slate-400 font-bold">Por:</span>
                       <span className="text-lg font-extrabold text-yellow-400">
                         {formatCurrencyBRL(deal.price)}
                       </span>
+                      {deal.coupon ? (
+                        <span className="text-[10px] font-bold text-emerald-300 bg-emerald-950/80 border border-emerald-700/60 px-1.5 py-0.5 rounded">
+                          com cupom {deal.coupon}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-bold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">
+                          no pix
+                        </span>
+                      )}
                     </div>
 
                     {deal.installments && (

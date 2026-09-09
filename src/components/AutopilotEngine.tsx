@@ -43,14 +43,14 @@ interface AutopilotEngineProps {
 }
 
 const CATEGORIES = [
-  { id: 'country', label: '🤠 Moda Country & Rodeio', query: 'chapeu country pralana bota texana goyazes rodeio' },
+  { id: 'bota', label: '👢 Botas Texanas & DGO', query: 'bota texana country dgo' },
+  { id: 'calca', label: '👖 Calças Country & King Farm', query: 'calca king farm muladeira carpinteira' },
+  { id: 'camisa', label: '👔 Camisas Xadrez Barretos', query: 'camisa xadrez country barretos' },
+  { id: 'chapeu', label: '🤠 Chapéus Pralana & Karandá', query: 'chapeu pralana country aba larga' },
+  { id: 'cinto', label: '⭐ Cintos de Couro & Fivelas', query: 'cinto country couro fivela pampas' },
+  { id: 'cupons', label: '🎟️ Só com Cupom OFERTASEMPRE', query: 'cupom desconto country' },
+  { id: 'country', label: '🌾 Moda Country & Agro Geral', query: 'chapeu bota texana calca country' },
   { id: 'all', label: '🔥 Todas as Ofertas', query: 'ofertas relampago' },
-  { id: 'agro', label: '🌾 Moda & Agro', query: 'chapeu pralana bota goyazes' },
-  { id: 'tech', label: '📱 Celulares & Tech', query: 'smartphone fone bluetooth jbl' },
-  { id: 'casa', label: '🍳 Casa & Cozinha', query: 'air fryer walita cafeteira aspirador' },
-  { id: 'ferramentas', label: '🛠️ Ferramentas & Oficina', query: 'parafusadeira furadeira bosch' },
-  { id: 'beleza', label: '💄 Perfumaria & Beleza', query: 'perfume malbec boticario' },
-  { id: 'cupons', label: '🎟️ Super Descontos & Cupons', query: 'desconto cupom' },
 ];
 
 const INTERVAL_OPTIONS = [
@@ -512,13 +512,14 @@ export const AutopilotEngine: React.FC<AutopilotEngineProps> = ({
 
         {/* Country Quick Tags */}
         <div className="flex items-center gap-1.5 overflow-x-auto text-[11px] text-slate-400 pt-0.5">
-          <span className="font-semibold text-slate-300 shrink-0">Atalhos Country:</span>
+          <span className="font-semibold text-slate-300 shrink-0">Categorias Rápidas:</span>
           {[
-            '🤠 Chapéu Pralana',
-            '👢 Bota Goyazes',
-            '👢 Bota Texana Feminina',
-            '🌾 Cinto Couro Country',
-            '👕 Camisa Xadrez Rodeio',
+            '👢 Botas Texanas',
+            '👖 Calças King Farm',
+            '👔 Camisas Xadrez',
+            '🤠 Chapéus Pralana',
+            '⭐ Cintos com Fivela',
+            '🎟️ Cupom OFERTASEMPRE',
           ].map((tag, idx) => (
             <button
               key={idx}
@@ -528,7 +529,7 @@ export const AutopilotEngine: React.FC<AutopilotEngineProps> = ({
                 setSearchKeyword(query);
                 performCycle(true, 'country', query);
               }}
-              className="px-2.5 py-1 rounded-lg bg-slate-950 hover:bg-yellow-400/10 text-slate-300 hover:text-yellow-300 border border-slate-800 text-[11px] whitespace-nowrap transition-colors cursor-pointer"
+              className="px-2.5 py-1 rounded-lg bg-slate-950 hover:bg-yellow-400/10 text-slate-300 hover:text-yellow-300 border border-slate-800 text-[11px] whitespace-nowrap transition-colors cursor-pointer font-medium"
             >
               {tag}
             </button>

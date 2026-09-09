@@ -828,22 +828,41 @@ app.get("/api/autopilot/scan", async (req, res) => {
     const customQuery = ((req.query.q as string) || (req.query.query as string) || "").trim();
     const minDiscount = Number(req.query.minDiscount) || 0;
     const onlyFreeShipping = req.query.onlyFreeShipping === "true";
-    const onlyWithCoupon = req.query.onlyWithCoupon === "true";
-    const CATEGORY_SEARCH_MAP: Record<string, string> = { all: "ofertas relampago mercado livre", country: "chapeu country pralana bota texana goyazes cinto rodeio", tech: "smartphone celular fone bluetooth jbl", agro: "chapeu pralana bota texana goyazes couro", casa: "air fryer walita cafeteira robo aspirador", ferramentas: "parafusadeira furadeira bosch", beleza: "perfume malbec boticario importado", cupons: "ofertas com desconto frete gratis" };
+    const CATEGORY_SEARCH_MAP: Record<string, string> = {
+      all: "ofertas relampago country agro",
+      country: "chapeu country pralana bota texana goyazes cinto rodeio",
+      bota: "bota texana country masculina feminina dgo couro",
+      calca: "calca king farm muladeira carpinteira jeans country",
+      camisa: "camisa xadrez country barretos manga longa",
+      chapeu: "chapeu pralana country aba larga peao cavalgada",
+      cinto: "cinto country couro fivela pampas sertaneja",
+      cupons: "ofertas com desconto frete gratis cupom",
+      agro: "chapeu pralana bota texana goyazes couro",
+      tech: "smartphone celular fone bluetooth jbl",
+      casa: "air fryer walita cafeteira robo aspirador",
+      ferramentas: "parafusadeira furadeira bosch",
+      beleza: "perfume malbec boticario importado"
+    };
     const searchQuery = customQuery || CATEGORY_SEARCH_MAP[category] || category || "ofertas relampago";
     let liveCandidates: any[] = [];
     try { const scraped = await scrapeMercadoLivreHtml(searchQuery); if (scraped.length > 0) liveCandidates = scraped; } catch { /* fallback */ }
     if (liveCandidates.length === 0) { try { const grounded = await searchRealMLWithGrounding(searchQuery); if (grounded.length > 0) liveCandidates = grounded; } catch { /* fallback */ } }
     if (liveCandidates.length === 0) {
       liveCandidates = POPULAR_CURATED_DEALS.filter((d) => {
+        const t = (d.title || "").toLowerCase();
         if (customQuery) {
           const q = customQuery.toLowerCase();
-          const t = d.title.toLowerCase();
           const c = (d.categoryName || "").toLowerCase();
           const h = (d.headline || "").toLowerCase();
           return t.includes(q) || c.includes(q) || h.includes(q) || q.split(/\s+/).some((w) => t.includes(w) || c.includes(w));
         }
-        return category === "all" || (d.categoryName || "").toLowerCase().includes(category.toLowerCase()) || d.title.toLowerCase().includes(category.toLowerCase());
+        if (category === "bota") return t.includes("bota") || t.includes("texana") || t.includes("botina") || t.includes("dgo");
+        if (category === "calca") return t.includes("calça") || t.includes("calca") || t.includes("king farm") || t.includes("muladeira") || t.includes("carpinteira") || t.includes("jeans");
+        if (category === "camisa") return t.includes("camisa") || t.includes("xadrez");
+        if (category === "chapeu") return t.includes("chapéu") || t.includes("chapeu") || t.includes("pralana");
+        if (category === "cinto") return t.includes("cinto") || t.includes("fivela");
+        if (category === "cupons") return Boolean(d.coupon);
+        return category === "all" || (d.categoryName || "").toLowerCase().includes(category.toLowerCase()) || t.includes(category.toLowerCase());
       });
       if (liveCandidates.length === 0) liveCandidates = POPULAR_CURATED_DEALS;
     }
