@@ -39,29 +39,50 @@ interface ProductDeal {
   description?: string;
 }
 
-const LIVE_SCRAPED_DEALS: ProductDeal[] = (Array.isArray(liveScrapedData) ? liveScrapedData : []).map((d: any) => ({
-  id: d.id,
-  title: d.title,
-  headline: `🔥 ${d.title.toUpperCase().slice(0, 40)} 🤠🌾`,
-  price: Number(d.price) || 0,
-  originalPrice: d.originalPrice ? Number(d.originalPrice) : null,
-  discountPercentage: Number(d.discountPercentage) || 0,
-  currency_id: 'BRL',
-  permalink: d.permalink,
-  thumbnail: d.thumbnail || 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
-  fullImage: d.thumbnail || 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
-  freeShipping: Boolean(d.freeShipping),
-  sellerName: 'Mercado Livre',
-  ratings: 4.9,
-  reviewsCount: 120,
-  categoryName: 'Moda Country & Agro',
-  coupon: d.coupon || 'OFERTASEMPRE',
-  installments: {
-    quantity: 12,
-    amount: Math.round(((Number(d.price) || 0) / 12) * 100) / 100,
-    rate: 0
+function applyCouponDiscount(rawPrice: number, rawOrigPrice?: number | null, rawDiscount?: number) {
+  const basePrice = Number(rawPrice) || 0;
+  let originalPrice = rawOrigPrice && rawOrigPrice > basePrice ? Number(rawOrigPrice) : basePrice;
+  let finalPrice = basePrice;
+  let discountPercentage = rawDiscount || 0;
+
+  if (rawOrigPrice && rawOrigPrice > basePrice) {
+    finalPrice = Math.round(basePrice * 0.90 * 100) / 100;
+    discountPercentage = Math.round(((originalPrice - finalPrice) / originalPrice) * 100);
+  } else {
+    originalPrice = basePrice;
+    finalPrice = Math.round(basePrice * 0.78 * 100) / 100;
+    discountPercentage = 22;
   }
-}));
+
+  return { originalPrice, price: finalPrice, discountPercentage };
+}
+
+const LIVE_SCRAPED_DEALS: ProductDeal[] = (Array.isArray(liveScrapedData) ? liveScrapedData : []).map((d: any) => {
+  const calculated = applyCouponDiscount(d.price, d.originalPrice, d.discountPercentage);
+  return {
+    id: d.id,
+    title: d.title,
+    headline: `🔥 ${d.title.toUpperCase().slice(0, 40)} 🤠🌾`,
+    price: calculated.price,
+    originalPrice: calculated.originalPrice,
+    discountPercentage: calculated.discountPercentage,
+    currency_id: 'BRL',
+    permalink: d.permalink,
+    thumbnail: d.thumbnail || 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
+    fullImage: d.thumbnail || 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
+    freeShipping: Boolean(d.freeShipping),
+    sellerName: 'Mercado Livre',
+    ratings: 4.9,
+    reviewsCount: 120,
+    categoryName: 'Moda Country & Agro',
+    coupon: d.coupon || 'OFERTASEMPRE',
+    installments: {
+      quantity: 12,
+      amount: Math.round(((calculated.price) / 12) * 100) / 100,
+      rate: 0
+    }
+  };
+});
 
 const INITIAL_USER_EXAMPLE_DEAL: ProductDeal = {
   id: 'MLB-1096532545',
