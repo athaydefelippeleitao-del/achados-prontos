@@ -675,6 +675,7 @@ app.get("/api/ml/search", async (req, res) => {
       if (key === term || synonymList.includes(term)) synonymList.forEach((s) => expandedTerms.add(s));
     });
   });
+  const allTerms = Array.from(expandedTerms);
   let matchedDeals: any[] = [];
   if (searchTerms.length > 0) {
     // 1. Try exact term matching first (e.g. title includes "bota" or "calca")
