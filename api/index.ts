@@ -10,7 +10,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
-import { POPULAR_CURATED_DEALS, INITIAL_USER_EXAMPLE_DEAL } from "../src/data/mockDeals";
+import { POPULAR_CURATED_DEALS, INITIAL_USER_EXAMPLE_DEAL } from "./mockDeals";
 
 dotenv.config();
 
