@@ -1,0 +1,7 @@
+{
+  "name": "AchadosPronto",
+  "description": "Gerador e buscador de promoções do Mercado Livre para grupos de WhatsApp e Telegram com fotos, mensagens prontas e modelos personalizados.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
