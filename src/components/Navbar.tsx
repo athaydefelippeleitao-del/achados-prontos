@@ -27,6 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   openAffiliateModal,
   savedCount,
+  queueCount = 0,
   onQuickPasteClick,
 }) => {
   return (

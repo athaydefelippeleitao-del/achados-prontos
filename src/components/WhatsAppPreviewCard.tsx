@@ -43,6 +43,7 @@ export const WhatsAppPreviewCard: React.FC<WhatsAppPreviewCardProps> = ({
   productLink,
   onOpenCardModal,
   onSaveFavorite,
+  onAddToQueue,
   isSaved = false,
 }) => {
   const [copied, setCopied] = useState(false);
